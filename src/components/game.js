@@ -13,12 +13,13 @@ const tilesets = {
 const TILESET = tilesets.tiles;
 const TILE_SIZE_PX = 32
 
+
 class BoardScene extends Phaser.Scene {
-  MAP_SIZE = [25, 20];
+  MAP_SIZE = [50, 50];
   map = null
   layers = []
   entities = []
-  
+
   constructor() {
     super("BoardScene");
   }
@@ -31,15 +32,26 @@ class BoardScene extends Phaser.Scene {
   }
 
   create() {
-    // Add your game logic and scene setup here
     // Create map
-    this.map = this.make.tilemap({
-      tileWidth: TILESET.imageSize[0],
-      tileHeight: TILESET.imageSize[1],
-      width: this.MAP_SIZE[0],
-      height: this.MAP_SIZE[1]
-    });
     this.resetMap();
+
+    // Camera
+    this.cameras.main.setZoom(2);
+    this.cameras.main.setBackgroundColor("#000000");
+    this.cameras.main.setBounds(
+      0,
+      0,
+      TILE_SIZE_PX * this.MAP_SIZE[0],
+      TILE_SIZE_PX * this.MAP_SIZE[1]
+    );
+
+    // Inputs
+    // Map drag
+    this.input.mouse.disableContextMenu();
+    this.input.on("pointermove", (pointer) =>
+      this.dealWithMouseDrag(pointer)
+    );
+
   }
   resetMap() {
     // Creating an empty map
@@ -80,6 +92,15 @@ class BoardScene extends Phaser.Scene {
       entity.runningAnimation?.destroy();
     });
     this.entities = [];
+  }
+  dealWithMouseDrag(pointer) {
+    if (pointer.isDown) {
+      this.input?.manager.setDefaultCursor("grabbing");
+      this.cameras.main.scrollX -=
+        (pointer.x - pointer.prevPosition.x) / this.cameras.main.zoom;
+      this.cameras.main.scrollY -=
+        (pointer.y - pointer.prevPosition.y) / this.cameras.main.zoom;
+    }
   }
 }
 
