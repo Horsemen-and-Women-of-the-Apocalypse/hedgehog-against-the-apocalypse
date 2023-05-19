@@ -25,11 +25,11 @@ export default class Hedgehog {
     }
 
     move(position) {
+        const deltax = position.x * 5
+        const deltay = position.y * 5
         if(this.sprite != undefined) {
-            this.x += position.x;
-            this.y += position.y;
-            this.sprite.x += position.x;
-            this.sprite.y += position.y;
+            this.sprite.x += deltax;
+            this.sprite.y += deltay;
         }
     }
 

@@ -36,7 +36,7 @@ class BoardScene extends Phaser.Scene {
 
     // Create entities
     this.City = new City(MAP_SIZE, this);
-    this.hedgehog = new Hedgehog(this.MAP_SIZE[0]/2, this.MAP_SIZE[1]/2, 0, this);
+    this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, MAP_SIZE[1] / 2, 0, this);
 
     // Create map
     this.resetMap();
@@ -81,23 +81,28 @@ class BoardScene extends Phaser.Scene {
     this.groundLayer.fill(0, 0, 0, MAP_SIZE[0], MAP_SIZE[1]);
     this.groundLayer.setDepth(0);
 
-    this.hedgehog.sprite = this.add.sprite(this.hedgehog.getPosition().x, this.hedgehog.getPosition().y, 'hedgehog');
-    this.hedgehog.sprite.setDepth(1);
     this.City.resetGrid()
   }
 
   update() {
-    if(this.movementCursors) {
-      if(this.movementCursors.up.isDown) {
+    // Keyboard inputs
+    if (this.movementCursors) {
+      if (this.movementCursors.up.isDown) {
         this.hedgehog.move(DIRECTIONS.North);
-      } else if(this.movementCursors.right.isDown) {
+      }
+      if (this.movementCursors.right.isDown) {
         this.hedgehog.move(DIRECTIONS.East);
-      } else if(this.movementCursors.left.isDown) {
+      }
+      if (this.movementCursors.left.isDown) {
         this.hedgehog.move(DIRECTIONS.West);
-      } else if(this.movementCursors.down.isDown) {
+      }
+      if (this.movementCursors.down.isDown) {
         this.hedgehog.move(DIRECTIONS.South);
       }
     }
+
+    // Update entities
+    this.City.theCityIsGrowing();
   }
 }
 

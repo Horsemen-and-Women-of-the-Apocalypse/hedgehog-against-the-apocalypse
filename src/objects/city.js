@@ -1,7 +1,7 @@
 import { TILE_SIZE_PX } from "../constants";
 
-const INITIAL_BUILDING_PERCENTAGE = 0.5;
-const BUILDING_GROWTH_PERCENTAGE = 0.1;
+const INITIAL_BUILDING_PERCENTAGE = 0.01;
+const BUILDING_GROWTH_PERCENTAGE = 0.006;
 
 export default class City {
 
@@ -51,30 +51,24 @@ export default class City {
             }
         }
 
-        // 2. Pick a random empty cell
-        const nbEmptyCells = emptyCells.length;
-        const nbNewBuildings = Math.floor(nbEmptyCells * BUILDING_GROWTH_PERCENTAGE);
-        for (let i = 0; i < nbNewBuildings; i++) {
-            const randomIndex = Math.floor(Math.random() * nbEmptyCells);
-            const [x, y] = emptyCells[randomIndex];
+        // 2. Pick a random list of empty cells
+        const nbEmptyCellsToFill = Math.ceil(emptyCells.length * BUILDING_GROWTH_PERCENTAGE);
+        const randomEmptyCells = emptyCells.sort(() => 0.5 - Math.random());
+        for (let i = 0; i < nbEmptyCellsToFill; i++) {
+            const [x, y] = randomEmptyCells[i];
+            // 3. Place a building
             this.placeBuilding(x, y);
-            emptyCells.splice(randomIndex, 1);
+            break;
         }
     }
 
     getAdjacentBuildings(x, y) {
         const adjacentBuildings = [];
-        // Check all the 8 adjacent cells
-        for (let i = -1; i <= 1; i++) {
-            if (x + i < 0 || x + i >= this.mapSize[0]) continue;
-            for (let j = -1; j <= 1; j++) {
-                if (y + j < 0 || y + j >= this.mapSize[1]) continue;
-                if (i === 0 && j === 0) continue;
-                if (this.grid[x + i][y + j] !== 0) {
-                    adjacentBuildings.push([x + i, y + j]);
-                }
-            }
-        }
+        // Check all the 4 adjacent cells
+        if (x > 0 && this.grid[x - 1][y] !== 0) adjacentBuildings.push(this.grid[x - 1][y]);
+        if (x < this.mapSize[0] - 1 && this.grid[x + 1][y] !== 0) adjacentBuildings.push(this.grid[x + 1][y]);
+        if (y > 0 && this.grid[x][y - 1] !== 0) adjacentBuildings.push(this.grid[x][y - 1]);
+        if (y < this.mapSize[1] - 1 && this.grid[x][y + 1] !== 0) adjacentBuildings.push(this.grid[x][y + 1]);
         return adjacentBuildings;
     }
 }
