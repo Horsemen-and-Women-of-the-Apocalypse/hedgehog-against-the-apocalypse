@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import Hedgehog from "../objects/hedgehog";
-
+import Position from "@/objects/position";
 
 const tilesets = {
   tiles: {
@@ -13,6 +13,16 @@ const tilesets = {
 
 const TILESET = tilesets.tiles;
 const TILE_SIZE_PX = 32
+
+const DIRECTIONS = {
+  North: new Position(0, -1),
+  East: new Position(1, 0),
+  South: new Position(0, 1),
+  West: new Position(-1, 0),
+}
+
+// Events
+const PLAYER_MOVE_EVENT_NAME = "playerMove";
 
 
 class BoardScene extends Phaser.Scene {
@@ -55,6 +65,35 @@ class BoardScene extends Phaser.Scene {
     );
 
     // Inputs
+
+    this.movementCursors = this.input.keyboard.createCursorKeys();
+
+    this.input.keyboard.on("keydown-UP", () => {
+      console.log(DIRECTIONS.North);
+      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.North);
+    });
+    this.input.keyboard.on("keydown-DOWN", () => {
+      console.log(DIRECTIONS.South);
+      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.South);
+    });
+    this.input.keyboard.on("keydown-LEFT", () => {
+      console.log(DIRECTIONS.West);
+      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.West);
+    });
+    this.input.keyboard.on("keydown-RIGHT", () => {
+      console.log(DIRECTIONS.East);
+      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.East);
+    });
+    this.events.on(PLAYER_MOVE_EVENT_NAME, (direction) => {
+
+      console.log(this.hedgehog.position.x);
+      console.log(direction.x);
+
+      this.hedgehog.position.x += direction.x;
+      this.hedgehog.position.y += direction.y;
+
+      console.log("hedgehog moved to x :" + this.hedgehog.position.x + " y :" + this.hedgehog.position.y);
+    });
   }
 
   resetMap() {
