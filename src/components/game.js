@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import Hedgehog from "../objects/hedgehog";
 
 
 const tilesets = {
@@ -29,13 +30,21 @@ class BoardScene extends Phaser.Scene {
       frameWidth: TILESET.imageSize[0],
       frameHeight: TILESET.imageSize[1]
     });
+    this.load.image('hedgehog', 'assets/sprites/hedgehog.png');  
   }
 
   create() {
+
+    // Create entities
+
+    this.hedgehog = new Hedgehog(25, 25, 0);
+    this.hedgehog.sprite = this.add.sprite(this.hedgehog.getPosition().x, this.hedgehog.getPosition().y, 'hedgehog');
+
     // Create map
     this.resetMap();
 
     // Camera
+    this.cameras.main.startFollow(this.hedgehog.sprite);
     this.cameras.main.setZoom(2);
     this.cameras.main.setBackgroundColor("#000000");
     this.cameras.main.setBounds(
@@ -46,13 +55,8 @@ class BoardScene extends Phaser.Scene {
     );
 
     // Inputs
-    // Map drag
-    this.input.mouse.disableContextMenu();
-    this.input.on("pointermove", (pointer) =>
-      this.dealWithMouseDrag(pointer)
-    );
-
   }
+
   resetMap() {
     // Creating an empty map
     this.map = this.make.tilemap({
@@ -71,6 +75,8 @@ class BoardScene extends Phaser.Scene {
       0,
       0
     );
+
+    this.hedgehog.sprite = this.add.sprite(this.hedgehog.getPosition().x, this.hedgehog.getPosition().y, 'hedgehog');
 
     // Reset layers
     this.layers.forEach(layer => {

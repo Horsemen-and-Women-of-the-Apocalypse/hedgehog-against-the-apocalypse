@@ -8,11 +8,10 @@ export default class Hedgehog {
      * @param {*} defaultY 
      * @param {*} direction 0 - North 1 - East 2 - South 3 - West
      */
-    constructor(defaultX, defaultY, direction, sprite) {
-        this.sprite = sprite;
+    constructor(defaultX, defaultY, direction) {
         this.isAlive = true;
         this.direction = direction;
-        this.position = Position(defaultX, defaultY);
+        this.position = new Position(defaultX, defaultY);
     }
 
     getPosition() {
