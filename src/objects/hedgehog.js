@@ -12,15 +12,20 @@ export default class Hedgehog {
         this.isAlive = true;
         this.direction = direction;
         this.position = new Position(defaultX, defaultY);
+        this.sprite = undefined;
     }
 
     getPosition() {
         return this.position;
     }
 
-    move(x, y) {
-        this.x = x;
-        this.y = y;
+    move(position) {
+        if(this.sprite != undefined) {
+            this.x += position.x;
+            this.y += position.y;
+            this.sprite.x += position.x;
+            this.sprite.y += position.y;
+        }
     }
 
     isAlive() {

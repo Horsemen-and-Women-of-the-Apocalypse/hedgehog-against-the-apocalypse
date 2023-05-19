@@ -21,10 +21,6 @@ const DIRECTIONS = {
   West: new Position(-1, 0),
 }
 
-// Events
-const PLAYER_MOVE_EVENT_NAME = "playerMove";
-
-
 class BoardScene extends Phaser.Scene {
   MAP_SIZE = [50, 50];
   map = null
@@ -36,19 +32,19 @@ class BoardScene extends Phaser.Scene {
   }
   preload() {
     // Load tileset
+    /* 
     this.load.spritesheet(TILESET.name, TILESET.path, {
       frameWidth: TILESET.imageSize[0],
       frameHeight: TILESET.imageSize[1]
     });
+    */
     this.load.image('hedgehog', 'assets/sprites/hedgehog.png');  
   }
 
   create() {
 
     // Create entities
-
-    this.hedgehog = new Hedgehog(25, 25, 0);
-    this.hedgehog.sprite = this.add.sprite(this.hedgehog.getPosition().x, this.hedgehog.getPosition().y, 'hedgehog');
+    this.hedgehog = new Hedgehog(this.MAP_SIZE[0]/2, this.MAP_SIZE[1]/2, 0);
 
     // Create map
     this.resetMap();
@@ -67,33 +63,6 @@ class BoardScene extends Phaser.Scene {
     // Inputs
 
     this.movementCursors = this.input.keyboard.createCursorKeys();
-
-    this.input.keyboard.on("keydown-UP", () => {
-      console.log(DIRECTIONS.North);
-      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.North);
-    });
-    this.input.keyboard.on("keydown-DOWN", () => {
-      console.log(DIRECTIONS.South);
-      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.South);
-    });
-    this.input.keyboard.on("keydown-LEFT", () => {
-      console.log(DIRECTIONS.West);
-      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.West);
-    });
-    this.input.keyboard.on("keydown-RIGHT", () => {
-      console.log(DIRECTIONS.East);
-      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.East);
-    });
-    this.events.on(PLAYER_MOVE_EVENT_NAME, (direction) => {
-
-      console.log(this.hedgehog.position.x);
-      console.log(direction.x);
-
-      this.hedgehog.position.x += direction.x;
-      this.hedgehog.position.y += direction.y;
-
-      console.log("hedgehog moved to x :" + this.hedgehog.position.x + " y :" + this.hedgehog.position.y);
-    });
   }
 
   resetMap() {
@@ -138,13 +107,18 @@ class BoardScene extends Phaser.Scene {
     });
     this.entities = [];
   }
-  dealWithMouseDrag(pointer) {
-    if (pointer.isDown) {
-      this.input?.manager.setDefaultCursor("grabbing");
-      this.cameras.main.scrollX -=
-        (pointer.x - pointer.prevPosition.x) / this.cameras.main.zoom;
-      this.cameras.main.scrollY -=
-        (pointer.y - pointer.prevPosition.y) / this.cameras.main.zoom;
+
+  update() {
+    if(this.movementCursors) {
+      if(this.movementCursors.up.isDown) {
+        this.hedgehog.move(DIRECTIONS.North);
+      } else if(this.movementCursors.right.isDown) {
+        this.hedgehog.move(DIRECTIONS.East);
+      } else if(this.movementCursors.left.isDown) {
+        this.hedgehog.move(DIRECTIONS.West);
+      } else if(this.movementCursors.down.isDown) {
+        this.hedgehog.move(DIRECTIONS.South);
+      }
     }
   }
 }
