@@ -1,16 +1,55 @@
 <template>
   <div id="game">
-    game
+    <div id="board"></div>
   </div>
 </template>
 
 <script>
+import { game } from "./game";
+
 export default {
   name: 'hata-Game',
-  props: {
+  props: {},
+  data() {
+    return {
+    }
+  },
+  mounted() {
+    // Init game
+    game.events.on("ready", () => this.setupListeners());
+  },
+  methods: {
+    setupListeners() {
+      // Setup listeners
+      game.events.on("gameover", () => this.gameover());
+      game.events.on("move", () => this.move());
+      game.events.on("win", () => this.win());
+    },
+    gameover() {
+      // Game over
+      console.log("Game over");
+    },
+    move() {
+      // Move
+      console.log("Move");
+    },
+    win() {
+      // Win
+      console.log("Win");
+    }
   }
+
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+#game {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#board {
+}
+</style>
