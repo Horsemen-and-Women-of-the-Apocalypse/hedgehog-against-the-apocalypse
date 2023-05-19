@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import Hedgehog from "../objects/hedgehog";
-import Position from "@/objects/position";
+import City from "../objects/city";
+import { TILE_SIZE_PX, MAP_SIZE, DIRECTIONS } from "../constants";
 
 const tilesets = {
   tiles: {
@@ -12,21 +13,12 @@ const tilesets = {
 };
 
 const TILESET = tilesets.tiles;
-const TILE_SIZE_PX = 32
-
-const DIRECTIONS = {
-  North: new Position(0, -1),
-  East: new Position(1, 0),
-  South: new Position(0, 1),
-  West: new Position(-1, 0),
-}
 
 // Events
 const PLAYER_MOVE_EVENT_NAME = "playerMove";
 
 
 class BoardScene extends Phaser.Scene {
-  MAP_SIZE = [50, 50];
   map = null
   layers = []
   entities = []
@@ -40,7 +32,8 @@ class BoardScene extends Phaser.Scene {
       frameWidth: TILESET.imageSize[0],
       frameHeight: TILESET.imageSize[1]
     });
-    this.load.image('hedgehog', 'assets/sprites/hedgehog.png');  
+    this.load.image('hedgehog', 'assets/sprites/hedgehog.png');
+    this.load.image('building', 'assets/sprites/building.png');
   }
 
   create() {
@@ -48,7 +41,8 @@ class BoardScene extends Phaser.Scene {
     // Create entities
 
     this.hedgehog = new Hedgehog(25, 25, 0);
-    this.hedgehog.sprite = this.add.sprite(this.hedgehog.getPosition().x, this.hedgehog.getPosition().y, 'hedgehog');
+
+    this.City = new City(MAP_SIZE, this);
 
     // Create map
     this.resetMap();
@@ -60,8 +54,8 @@ class BoardScene extends Phaser.Scene {
     this.cameras.main.setBounds(
       0,
       0,
-      TILE_SIZE_PX * this.MAP_SIZE[0],
-      TILE_SIZE_PX * this.MAP_SIZE[1]
+      TILE_SIZE_PX * MAP_SIZE[0],
+      TILE_SIZE_PX * MAP_SIZE[1]
     );
 
     // Inputs
@@ -101,8 +95,8 @@ class BoardScene extends Phaser.Scene {
     this.map = this.make.tilemap({
       tileWidth: TILE_SIZE_PX,
       tileHeight: TILE_SIZE_PX,
-      width: this.MAP_SIZE[0],
-      height: this.MAP_SIZE[1]
+      width: MAP_SIZE[0],
+      height: MAP_SIZE[1]
     });
 
     // Load tiles and reset layers
@@ -115,28 +109,15 @@ class BoardScene extends Phaser.Scene {
       0
     );
 
+    this.groundLayer = this.map.createBlankLayer(`groundLayer`, tiles);
+    // Fill the layer with grass tiles
+    this.groundLayer.fill(0, 0, 0, MAP_SIZE[0], MAP_SIZE[1]);
+    this.groundLayer.setDepth(0);
+
     this.hedgehog.sprite = this.add.sprite(this.hedgehog.getPosition().x, this.hedgehog.getPosition().y, 'hedgehog');
+    this.hedgehog.sprite.setDepth(1);
+    this.City.resetGrid()
 
-    // Reset layers
-    this.layers.forEach(layer => {
-      layer.destroy();
-    });
-
-    this.layers = [];
-    for (let i = 0; i < 1; i++) {
-      this.layers.push(this.map.createBlankLayer(`layer${i}`, tiles));
-      // Fill the layer with empty tiles
-      this.layers[i].fill(0, 0, 0, this.MAP_SIZE[0], this.MAP_SIZE[1]);
-      this.layers[i].setDepth(i + 1);
-    }
-
-    // Reset entities
-    this.entities.forEach(entity => {
-      entity.sprite.destroy();
-      entity.idleAnimation?.destroy();
-      entity.runningAnimation?.destroy();
-    });
-    this.entities = [];
   }
   dealWithMouseDrag(pointer) {
     if (pointer.isDown) {

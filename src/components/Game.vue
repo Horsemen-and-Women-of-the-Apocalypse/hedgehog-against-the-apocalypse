@@ -37,6 +37,10 @@ export default {
       // Win
       console.log("Win");
     }
+  }, 
+  beforeUnmount() {
+    // Destroy the game instance
+    game.destroy(true);
   }
 
 }
@@ -50,6 +54,6 @@ export default {
   justify-content: center;
   align-items: center;
 }
-#board {
-}
+
+#board {}
 </style>
