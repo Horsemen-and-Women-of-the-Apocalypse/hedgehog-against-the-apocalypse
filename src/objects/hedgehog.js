@@ -8,19 +8,29 @@ export default class Hedgehog {
      * @param {*} defaultY 
      * @param {*} direction 0 - North 1 - East 2 - South 3 - West
      */
-    constructor(defaultX, defaultY, direction) {
+    constructor(defaultX, defaultY, direction, scene) {
         this.isAlive = true;
         this.direction = direction;
         this.position = new Position(defaultX, defaultY);
+        this.sprite = scene.add.sprite(direction.x, direction.y, 'hedgehog');
+
+        const hedgehogLayer = scene.add.layer();
+        hedgehogLayer.setDepth(1);
+
+        hedgehogLayer.add(this.sprite);
     }
 
     getPosition() {
         return this.position;
     }
 
-    move(x, y) {
-        this.x = x;
-        this.y = y;
+    move(position) {
+        if(this.sprite != undefined) {
+            this.x += position.x;
+            this.y += position.y;
+            this.sprite.x += position.x;
+            this.sprite.y += position.y;
+        }
     }
 
     isAlive() {
