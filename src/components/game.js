@@ -32,19 +32,17 @@ class BoardScene extends Phaser.Scene {
   }
   preload() {
     // Load tileset
-    /* 
     this.load.spritesheet(TILESET.name, TILESET.path, {
       frameWidth: TILESET.imageSize[0],
       frameHeight: TILESET.imageSize[1]
     });
-    */
     this.load.image('hedgehog', 'assets/sprites/hedgehog.png');  
   }
 
   create() {
 
     // Create entities
-    this.hedgehog = new Hedgehog(this.MAP_SIZE[0]/2, this.MAP_SIZE[1]/2, 0);
+    this.hedgehog = new Hedgehog(this.MAP_SIZE[0]/2, this.MAP_SIZE[1]/2, 0, this);
 
     // Create map
     this.resetMap();
@@ -84,20 +82,16 @@ class BoardScene extends Phaser.Scene {
       0
     );
 
-    this.hedgehog.sprite = this.add.sprite(this.hedgehog.getPosition().x, this.hedgehog.getPosition().y, 'hedgehog');
-
     // Reset layers
     this.layers.forEach(layer => {
       layer.destroy();
     });
 
     this.layers = [];
-    for (let i = 0; i < 1; i++) {
-      this.layers.push(this.map.createBlankLayer(`layer${i}`, tiles));
-      // Fill the layer with empty tiles
-      this.layers[i].fill(0, 0, 0, this.MAP_SIZE[0], this.MAP_SIZE[1]);
-      this.layers[i].setDepth(i + 1);
-    }
+
+    this.layers.push(this.map.createBlankLayer(`layer${0}`, tiles));
+    this.layers[0].fill(0, 0, 0, this.MAP_SIZE[0], this.MAP_SIZE[1]);
+    this.layers[0].setDepth(0);
 
     // Reset entities
     this.entities.forEach(entity => {
