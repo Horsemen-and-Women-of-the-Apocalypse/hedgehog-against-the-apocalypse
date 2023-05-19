@@ -13,6 +13,16 @@ const tilesets = {
 const TILESET = tilesets.tiles;
 const TILE_SIZE_PX = 32
 
+const DIRECTIONS = {
+  North: "North",
+  South: "South",
+  West: "West",
+  East: "East"
+}
+
+// Events
+const PLAYER_MOVE_EVENT_NAME = "playerMove";
+
 
 class BoardScene extends Phaser.Scene {
   MAP_SIZE = [50, 50];
@@ -52,6 +62,27 @@ class BoardScene extends Phaser.Scene {
       this.dealWithMouseDrag(pointer)
     );
 
+    this.movementCursors = this.input.keyboard.createCursorKeys();
+
+    this.input.keyboard.on("keydown-UP", () => {
+      console.log(DIRECTIONS.North);
+      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.North);
+    });
+    this.input.keyboard.on("keydown-DOWN", () => {
+      console.log(DIRECTIONS.South);
+      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.South);
+    });
+    this.input.keyboard.on("keydown-LEFT", () => {
+      console.log(DIRECTIONS.West);
+      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.West);
+    });
+    this.input.keyboard.on("keydown-RIGHT", () => {
+      console.log(DIRECTIONS.East);
+      this.events.emit(PLAYER_MOVE_EVENT_NAME, DIRECTIONS.East);
+    });
+    this.events.on(PLAYER_MOVE_EVENT_NAME, (direction) => {
+      console.log("Player moved " + direction);
+    });
   }
   resetMap() {
     // Creating an empty map
