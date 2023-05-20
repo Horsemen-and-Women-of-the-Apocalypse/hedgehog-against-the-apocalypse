@@ -7,6 +7,7 @@ export default class Chunk {
     this.sprites = [];
     for (let x = 0; x < MAP_SIZE.width; x ++) {
       const sprite = this.scene.add.sprite(x * TILE_SIZE_PX, this.y * TILE_SIZE_PX, 'grass');
+      sprite.setScale(32 / 100);
       sprite.setOrigin(0, 0);
       this.sprites.push(sprite);
     }

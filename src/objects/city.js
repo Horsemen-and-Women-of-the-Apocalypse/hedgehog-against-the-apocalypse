@@ -11,8 +11,6 @@ export default class City {
      */
     constructor(scene) {
         this.scene = scene;
-        this.layer = this.scene.add.layer();
-        this.layer.setDepth(1);
         this.step = 0;
         this.sprites = [];
         this.moveSpriteIterator = 0;
@@ -59,7 +57,7 @@ export default class City {
 
     nextRow() {
         const newLayer = new Array(MAP_SIZE.width).fill(0),
-             y = MAP_SIZE.height - 1;
+            y = MAP_SIZE.height - 1;
 
         this.step ++;
 
@@ -73,25 +71,25 @@ export default class City {
     }
 
     placeBuilding(x, y) {
-        const maxSprites = MAP_SIZE.width * MAP_SIZE.height;
+        const maxSprites = MAP_SIZE.width * MAP_SIZE.height / 2;
 
         if (this.grid[y][x] === 1) {
             return;
         }
 
         this.grid[y][x] = 1;
-        
+
         if(this.sprites.length > maxSprites) {
             this.sprites[this.moveSpriteIterator].setPosition(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX);
+            this.sprites[this.moveSpriteIterator].play('building_1');
+
             this.moveSpriteIterator = (this.moveSpriteIterator + 1) % maxSprites;
         } else {
-	    const spriteGround = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani0')
-	    spriteGround.setScale(32/100);
-	    const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani1').play('building_1');
-	    sprite.setScale(32/256);
-	    this.spriteGroup.add(sprite);
-	    sprite.setImmovable();
-	    sprite.setOrigin(0, 0);
+            const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani1').play('building_1');
+            sprite.setScale(32/256);
+            this.spriteGroup.add(sprite);
+            sprite.setImmovable();
+            sprite.setOrigin(0, 0);
 
             this.sprites.push(sprite);
         }
@@ -134,10 +132,10 @@ export default class City {
     }
 
     isHedgehogInBuilding(hedgehog, x, y) {
-        return hedgehog.getPosition().x > x - 1 &&
-            hedgehog.getPosition().x < x + 1 &&
-            hedgehog.getPosition().y > y - 1 &&
-            hedgehog.getPosition().y < y + 1;
+        return hedgehog.position.x > x - 1 &&
+            hedgehog.position.x < x + 1 &&
+            hedgehog.position.y > y - 1 &&
+            hedgehog.position.y < y + 1;
     }
 
     destroy() {
