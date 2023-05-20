@@ -2,7 +2,7 @@ import { TILE_SIZE_PX } from "../constants";
 
 const SIZE_OF_SQUARE_FREE_OF_BUILDINGS = 5;
 const INITIAL_BUILDING_PERCENTAGE = 0.21;
-const BUILDING_GROWTH_PERCENTAGE = 0.00;
+const BUILDING_GROWTH_PERCENTAGE = 0.0001;
 
 export default class City {
 
@@ -16,6 +16,8 @@ export default class City {
         this.layer.setDepth(1);
         this.testSprite = this.scene.add.sprite(0, 0, 'building');
         this.testSprite.setOrigin(0, 0);
+        this.scene.physics.world.enable(this.testSprite);
+        this.testSprite.body.setImmovable(true);
         this.layer.add(this.testSprite);
     }
 

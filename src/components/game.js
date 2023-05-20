@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import Hedgehog from "../objects/hedgehog";
 import City from "../objects/city";
-import { TILE_SIZE_PX, MAP_SIZE, DIRECTIONS, SCROLL_SPEED } from "../constants";
+import { TILE_SIZE_PX, MAP_SIZE, SCROLL_SPEED } from "../constants";
 
 const tilesets = {
   tiles: {
@@ -29,6 +29,7 @@ class BoardScene extends Phaser.Scene {
       frameHeight: TILESET.imageSize[1]
     });
     this.load.image('hedgehog', 'assets/sprites/hedgehog.png');
+    this.load.image('target', 'assets/sprites/target.png');
     this.load.image('building', 'assets/sprites/building.png');
 
     this.scrollDistance = 0;
@@ -38,10 +39,6 @@ class BoardScene extends Phaser.Scene {
     // Create entities
     this.city = new City(MAP_SIZE, this);
     this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, 8, 0, this);
-    this.physics.add.collider(this.hedgehog.sprite, this.city.testSprite, () => {
-      console.log("Collision");
-      this.hedgehog.kill();
-    });
     this.cameraTarget = this.add.sprite(this.hedgehog.getPosition().x * TILE_SIZE_PX, 200, "");
 
     // Create map
@@ -55,12 +52,16 @@ class BoardScene extends Phaser.Scene {
       0,
       0,
       TILE_SIZE_PX * MAP_SIZE[0],
-        Number.POSITIVE_INFINITY
+      Number.POSITIVE_INFINITY
     );
 
     // Inputs
-
     this.movementCursors = this.input.keyboard.createCursorKeys();
+
+    // Physics
+    this.physics.add.collider(this.hedgehog.sprite, this.city.testSprite);
+    this.physics.add.collider(this.hedgehog.targetSprite, this.city.testSprite);
+
   }
 
   resetMap() {
@@ -94,23 +95,13 @@ class BoardScene extends Phaser.Scene {
     this.scrollDistance += SCROLL_SPEED;
 
     // Keyboard inputs
-    if (this.movementCursors) {
-      if (this.movementCursors.up.isDown) {
-        this.hedgehog.move(DIRECTIONS.North);
-      }
-      if (this.movementCursors.right.isDown) {
-        this.hedgehog.move(DIRECTIONS.East);
-      }
-      if (this.movementCursors.left.isDown) {
-        this.hedgehog.move(DIRECTIONS.West);
-      }
-      if (this.movementCursors.down.isDown) {
-        this.hedgehog.move(DIRECTIONS.South);
-      }
-    }
+    this.input.on('pointermove', (pointer) => {
+      this.hedgehog.setTargetPosition(pointer)
+    });
 
     // Update entities
     this.city.theCityIsGrowing(this.hedgehog);
+    this.hedgehog.updatePosition();
 
     // Check end game
     // if (!this.hedgehog.isAlive) {

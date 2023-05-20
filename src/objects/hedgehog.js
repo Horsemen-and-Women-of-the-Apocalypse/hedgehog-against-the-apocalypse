@@ -4,7 +4,7 @@ import Phaser from "phaser";
 
 export default class Hedgehog {
 
-    SPEED = 0.05;
+    SPEED = 0.08;
 
     /**
      * 
@@ -19,49 +19,78 @@ export default class Hedgehog {
         this.direction = direction;
         this.target = new Position(defaultX, defaultY);
         this.position = new Position(defaultX, defaultY);
-        this.sprite = this.scene.add.sprite(direction.x, direction.y, 'hedgehog');
-        this.sprite.setCircle(TILE_SIZE_PX / 2);
-
+        // Add the physics sprite
+        this.sprite = scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog');
+        this.targetSprite = scene.add.image(0, 0, 'target').setVisible(false);
+        this.targetSprite.setScale(0.8);
         const hedgehogLayer = scene.add.layer();
         hedgehogLayer.setDepth(1);
 
         hedgehogLayer.add(this.sprite);
-        this.move(this.position);
+        hedgehogLayer.add(this.targetSprite);
+        // this.move(this.position);
     }
 
     getPosition() {
         return this.position;
     }
 
-    move(position) {
-
+    setTargetPosition(position) {
         if (!this.isAlive) {
             console.log("Hedgehog is dead");
             return
         }
 
-        // Check if the hedgehog is not out of the map
-        if (this.target.x - 0.5 < 0) this.target.x = 0.5;
-        if (this.target.y - 0.5 < 0) this.target.y = 0.5;
-        if (this.target.x + 0.5 > MAP_SIZE[0]) this.target.x = MAP_SIZE[0] - 0.5;
-        if (this.target.y + 0.5 > MAP_SIZE[1]) this.target.y = MAP_SIZE[1] - 0.5;
+        // Check if the cursor is not out of the map
+        let targetPositionX = position.x / (2 * TILE_SIZE_PX);
+        let targetPositionY = position.y / (2 * TILE_SIZE_PX);
+        if (targetPositionX < 0) targetPositionX = 0;
+        if (targetPositionY < 0) targetPositionY = 0;
+        if (targetPositionX > MAP_SIZE[0]) targetPositionX = MAP_SIZE[0];
+        if (targetPositionY > MAP_SIZE[1]) targetPositionY = MAP_SIZE[1];
 
-        const deltax = position.x * this.SPEED;
-        const deltay = position.y * this.SPEED;
+        // Update the target position
+        this.targetSprite.setVisible(true);
+        this.targetSprite.x = targetPositionX * TILE_SIZE_PX;
+        this.targetSprite.y = targetPositionY * TILE_SIZE_PX;
+        this.target.x = targetPositionX;
+        this.target.y = targetPositionY;
 
-        this.target.x += deltax;
-        this.target.y += deltay;
 
-        let angle = Phaser.Math.Angle.Between(this.target.x,this.target.y,this.position.x,this.position.y);
+        // Update the direction of the hedgehog
+        const spriteX = this.sprite.x / TILE_SIZE_PX;
+        const spriteY = this.sprite.y / TILE_SIZE_PX;
+        let angle = Phaser.Math.Angle.Between(targetPositionX, targetPositionY, spriteX, spriteY);
         this.sprite.rotation = angle + 270 * (3.14 / 180);
-
-        this.position.x = this.target.x * 0.1 + this.position.x * 0.9;
-        this.position.y = this.target.y * 0.1 + this.position.y * 0.9;
-
-        this.sprite.x = this.position.x * TILE_SIZE_PX;
-        this.sprite.y = this.position.y * TILE_SIZE_PX;
     }
 
+    updatePosition() {
+        // Get sprite position
+        const spriteX = this.sprite.x / TILE_SIZE_PX;
+        const spriteY = this.sprite.y / TILE_SIZE_PX;
+
+        const distance = Phaser.Math.Distance.BetweenPoints(this.sprite, this.targetSprite);
+        if (distance < TILE_SIZE_PX / 5) {
+            // stop the sprite
+            this.scene.physics.moveTo(this.sprite, spriteX, spriteY, 0);
+            return;
+        }
+
+        // Apply the velocity
+        this.scene.physics.moveTo(
+            this.sprite,
+            this.target.x * TILE_SIZE_PX,
+            this.target.y * TILE_SIZE_PX,
+            // Insert speed here
+        );
+
+        // Update the position
+        const newSpriteX = this.sprite.x;
+        const newSpriteY = this.sprite.y;
+        this.position.x = newSpriteX;
+        this.position.y = newSpriteY;
+
+    }
     kill() {
         this.isAlive = false;
     }
