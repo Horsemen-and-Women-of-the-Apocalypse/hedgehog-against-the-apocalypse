@@ -1,7 +1,14 @@
 import Position from "@/objects/position";
 
 const TILE_SIZE_PX = 32
-const MAP_SIZE = [40, 200];
+
+// [width, height]
+const MAP_SIZE = {
+    width: 40,
+    height: 25
+};
+
+const CITY_HEADSTART = 2;
 
 const SCROLL_SPEED = 1;
 
@@ -16,5 +23,6 @@ export {
     TILE_SIZE_PX,
     MAP_SIZE,
     DIRECTIONS,
-    SCROLL_SPEED
+    SCROLL_SPEED,
+    CITY_HEADSTART
 }

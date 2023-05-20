@@ -37,7 +37,7 @@ export default class Hedgehog {
         const deltay = position.y * 0.15
         this.position.x += deltax;
         this.position.y += deltay;
-        if (this.sprite != undefined) {
+        if (this.sprite) {
             this.sprite.x = this.position.x * TILE_SIZE_PX;
             this.sprite.y = this.position.y * TILE_SIZE_PX;
         }
