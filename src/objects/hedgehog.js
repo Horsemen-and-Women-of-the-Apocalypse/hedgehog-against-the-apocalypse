@@ -8,6 +8,7 @@ export default class Hedgehog {
      * @param {*} defaultX 
      * @param {*} defaultY 
      * @param {*} direction 0 - North 1 - East 2 - South 3 - West
+     * @param {*} scene
      */
     constructor(defaultX, defaultY, direction, scene) {
         this.isAlive = true;
