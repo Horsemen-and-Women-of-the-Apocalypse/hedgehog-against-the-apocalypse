@@ -29,7 +29,7 @@ export default class Hedgehog {
         this.position = new Position(defaultX, defaultY);
 
         // Add the physics sprite
-        this.sprite = this.scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog_ani0').play('hedgehog');
+        this.sprite = this.scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog_ani0')
         const hedgehogLayer = this.scene.add.layer();
         hedgehogLayer.setDepth(1);
         hedgehogLayer.add(this.sprite);
@@ -108,15 +108,18 @@ export default class Hedgehog {
 
             // stop the sprite
             this.scene.physics.moveTo(this.sprite, spriteX, spriteY, 0);
+            this.sprite.stop('hedgehog');
             return;
         } else {
             if (isChild) {
-                if(this.SPEED + 0.7 * distance > this.SPEED_MAX) {
+                if (this.SPEED + 0.7 * distance > this.SPEED_MAX) {
                     this.SPEED = this.SPEED_MAX;
                 } else {
                     this.SPEED = this.SPEED + (distance > 0.4 ? 0.7 * distance : -0.7 * distance);
-                } 
+                }
             }
+            // Play the animation if the animation is not already playing
+            if (!this.sprite.anims.isPlaying) this.sprite.play('hedgehog');
         }
 
         // Apply the velocity
