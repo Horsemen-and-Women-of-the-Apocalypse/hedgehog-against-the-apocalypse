@@ -1,4 +1,4 @@
-import {CITY_HEADSTART, MAP_SIZE, TILE_SIZE_PX} from '@/constants';
+import { CITY_HEADSTART, MAP_SIZE, TILE_SIZE_PX } from '@/constants';
 
 // const INITIAL_BUILDING_PERCENTAGE = 0.00;
 const BUILDING_GROWTH_PERCENTAGE = 0.001;
@@ -53,7 +53,7 @@ export default class City {
         const newLayer = new Array(MAP_SIZE.width).fill(0),
             y = MAP_SIZE.height - 1;
 
-        this.step ++;
+        this.step++;
 
         this.grid.shift();
         this.grid.push(newLayer);
@@ -73,17 +73,19 @@ export default class City {
 
         this.grid[y][x] = 1;
 
-        if(this.sprites.length > maxSprites) {
+        if (this.sprites.length > maxSprites) {
             this.sprites[this.moveSpriteIterator].setPosition(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX);
             this.sprites[this.moveSpriteIterator].play('building_1');
-
             this.moveSpriteIterator = (this.moveSpriteIterator + 1) % maxSprites;
         } else {
-            const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani1').play('building_1');
-            sprite.setScale(32/256);
-            this.spriteGroup.add(sprite);
+            const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani1')
+            sprite.play('building_1');
+            sprite.setScale(32 / 256);
             sprite.setImmovable();
             sprite.setOrigin(0, 0);
+            sprite.on('animationcomplete', () => {
+                this.spriteGroup.add(sprite);
+            });
 
             this.sprites.push(sprite);
         }
@@ -93,8 +95,8 @@ export default class City {
         // Add a new building to the city next to an existing building
         // 1. Find all the empty cells next to a building
 
-        for (let x = 0; x < MAP_SIZE.width; x ++) {
-            for (let y = 0; y < MAP_SIZE.height; y ++) {
+        for (let x = 0; x < MAP_SIZE.width; x++) {
+            for (let y = 0; y < MAP_SIZE.height; y++) {
                 if (this.grid[y][x] !== 0) {
                     const adjacentBuildings = this.getAdjacentBuildings(x, y);
                     // console.log(adjacentBuildings);
@@ -105,7 +107,7 @@ export default class City {
 
                             // Check if the hedgehog is in the new building
 
-                            for(let child of hedgehog.children) {
+                            for (let child of hedgehog.children) {
                                 if (this.isHedgehogInBuilding(child, buildingPos.x, buildingPos.y)) {
                                     child.kill();
                                 }
