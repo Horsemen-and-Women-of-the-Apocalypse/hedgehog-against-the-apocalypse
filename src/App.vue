@@ -1,14 +1,14 @@
 <template>
-  <Home/>
+  <Router/>
 </template>
 
 <script>
-import Home from './components/Home.vue'
+import Router from './components/Router.vue'
 
 export default {
   name: 'App',
   components: {
-    Home
+    Router
   }
 }
 </script>

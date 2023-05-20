@@ -1,20 +1,36 @@
 <template>
-    <div id="home">
-        <div id="pannel">
-            <h1>Hedgehog against the apocalypse</h1>
-            <a href="#/game"><button id="play">Play</button></a>
-            <a href=""><button id="about">About</button></a>
-        </div>
-    </div>
+    <component :is="currentView" />
 </template>
 
 <script>
 
+import Home from './Home.vue'
+import About from './About.vue'
+import Game from './Game.vue'
+
+const routes = {
+    '/home': Home,
+    '/about': About,
+    '/game': Game
+}
+
 export default {
     name: "my-home",
     data() {
+        return {
+            currentPath: window.location.hash
+        }
     },
     computed: {
+        currentView() {
+            return routes[this.currentPath.slice(1) || '/home'];
+        }
+    },
+    mounted() {
+        window.addEventListener('hashchange', () => {
+            console.log(window.location.hash);
+            this.currentPath = window.location.hash;
+        })
     }
 }
 </script>

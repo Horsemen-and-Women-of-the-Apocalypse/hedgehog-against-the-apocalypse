@@ -5,23 +5,36 @@
 </template>
 
 <script>
-import { game } from "./game";
+import { config } from "./game";
+import Phaser from "phaser";
 
 export default {
   name: 'hata-Game',
   props: {},
   data() {
     return {
+      game: null,
     }
   },
   mounted() {
-    // Init game
-    game.events.on("ready", () => {
-      console.log("Game is ready");
+    this.game = new Phaser.Game(config);
+
+    // Set up resize event listener to adapt to window size changes
+    window.addEventListener("resize", () => {
+      const { innerWidth, innerHeight } = window;
+      try {
+        this.game.scale.resize(innerWidth, innerHeight);
+      } catch (error) {
+        console.error(error);
+      }
     });
   },
   methods: {
   },
+  beforeUnmount() {
+    console.log("unmounting game");
+    this.game.destroy(true);
+  }
 }
 </script>
 

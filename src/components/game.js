@@ -141,22 +141,6 @@ const config = {
   scene: BoardScene
 };
 
-const game = new Phaser.Game(config);
 
-// Set up resize event listener to adapt to window size changes
-window.addEventListener("resize", () => {
-  const { innerWidth, innerHeight } = window;
-  try {
-    game.scale.resize(innerWidth, innerHeight);
-  } catch (error) {
-    console.error(error);
-  }
-});
 
-window.onbeforeunload = function () {
-  console.log("unloading window... try to unload cached images");
-  game.cache.destroy();
-  game.destroy(true);
-}
-
-export { game };
+export { config };
