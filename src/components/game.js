@@ -105,9 +105,8 @@ class BoardScene extends Phaser.Scene {
     this.city.theCityIsGrowing(this.hedgehog);
 
     // Check end game
-    if (!this.hedgehog.isAlive) {
-      // this.resetMap()
-    }
+    // if (!this.hedgehog.isAlive) {
+    // }
   }
 }
 
@@ -115,6 +114,10 @@ const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
+  physics: {
+    default: 'arcade',
+    arcade: { debug: true }
+  },
   scene: BoardScene
 };
 
@@ -133,7 +136,7 @@ window.addEventListener("resize", () => {
 window.onbeforeunload = function () {
   console.log("unloading window... try to unload cached images");
   game.cache.destroy();
-  game.destroy(false);
+  game.destroy(true);
 }
 
 export { game };

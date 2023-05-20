@@ -1,5 +1,5 @@
 import Position from "./position";
-import { TILE_SIZE_PX } from "../constants";
+import { TILE_SIZE_PX, MAP_SIZE } from "../constants";
 
 export default class Hedgehog {
 
@@ -13,7 +13,7 @@ export default class Hedgehog {
         this.isAlive = true;
         this.direction = direction;
         this.position = new Position(defaultX, defaultY);
-        this.sprite = scene.add.sprite(direction.x, direction.y, 'hedgehog');
+        this.sprite = scene.physics.add.sprite(this.position.x * TILE_SIZE_PX, this.position.y * TILE_SIZE_PX, 'hedgehog');
 
         const hedgehogLayer = scene.add.layer();
         hedgehogLayer.setDepth(1);
@@ -32,17 +32,25 @@ export default class Hedgehog {
             return
         }
 
+
         const deltax = position.x * 0.15
         const deltay = position.y * 0.15
         this.position.x += deltax;
         this.position.y += deltay;
+
+        // Check if the hedgehog is not out of the map
+        if (this.position.x - 0.5 < 0) this.position.x = 0.5;
+        if (this.position.y - 0.5 < 0) this.position.y = 0.5;
+        if (this.position.x + 0.5 > MAP_SIZE[0]) this.position.x = MAP_SIZE[0] - 0.5;
+        if (this.position.y + 0.5 > MAP_SIZE[1]) this.position.y = MAP_SIZE[1] - 0.5;
+
         if (this.sprite != undefined) {
             this.sprite.x = this.position.x * TILE_SIZE_PX;
             this.sprite.y = this.position.y * TILE_SIZE_PX;
         }
     }
 
-    kill(){
+    kill() {
         this.isAlive = false;
     }
 }
