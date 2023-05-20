@@ -1,7 +1,10 @@
 import Position from "./position";
 import { TILE_SIZE_PX } from "../constants";
+import Phaser from "phaser";
 
 export default class Hedgehog {
+
+    SPEED = 0.05;
 
     /**
      * 
@@ -11,10 +14,12 @@ export default class Hedgehog {
      * @param {*} scene
      */
     constructor(defaultX, defaultY, direction, scene) {
+        this.scene = scene;
         this.isAlive = true;
         this.direction = direction;
+        this.target = new Position(defaultX, defaultY);
         this.position = new Position(defaultX, defaultY);
-        this.sprite = scene.add.sprite(direction.x, direction.y, 'hedgehog');
+        this.sprite = this.scene.add.sprite(direction.x, direction.y, 'hedgehog');
 
         const hedgehogLayer = scene.add.layer();
         hedgehogLayer.setDepth(1);
@@ -28,19 +33,31 @@ export default class Hedgehog {
     }
 
     move(position) {
+
         if (!this.isAlive) {
             console.log("Hedgehog is dead");
             return
         }
 
-        const deltax = position.x * 0.15
-        const deltay = position.y * 0.15
-        this.position.x += deltax;
-        this.position.y += deltay;
-        if (this.sprite != undefined) {
-            this.sprite.x = this.position.x * TILE_SIZE_PX;
-            this.sprite.y = this.position.y * TILE_SIZE_PX;
+        if (this.sprite == undefined) {
+            console.log("Sprite is undefined");
+            return
         }
+
+        const deltax = position.x * this.SPEED;
+        const deltay = position.y * this.SPEED;
+
+        this.target.x += deltax;
+        this.target.y += deltay;
+
+        let angle = Phaser.Math.Angle.Between(this.target.x,this.target.y,this.position.x,this.position.y);
+        this.sprite.rotation = angle + 270 * (3.14 / 180);
+
+        this.position.x = this.target.x * 0.1 + this.position.x * 0.9;
+        this.position.y = this.target.y * 0.1 + this.position.y * 0.9;
+
+        this.sprite.x = this.position.x * TILE_SIZE_PX;
+        this.sprite.y = this.position.y * TILE_SIZE_PX;
     }
 
     kill(){
