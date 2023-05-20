@@ -14,11 +14,6 @@ export default class City {
         this.mapSize = mapSize;
         this.layer = this.scene.add.layer();
         this.layer.setDepth(1);
-        this.testSprite = this.scene.add.sprite(0, 0, 'building');
-        this.testSprite.setOrigin(0, 0);
-        this.scene.physics.world.enable(this.testSprite);
-        this.testSprite.body.setImmovable(true);
-        this.layer.add(this.testSprite);
     }
 
     resetGrid() {
@@ -51,6 +46,7 @@ export default class City {
         sprite.setOrigin(0, 0);
         this.scene.physics.world.enable(sprite);
         sprite.body.setImmovable(true);
+        
         this.grid[x][y] = sprite;
         this.layer.add(sprite);
         this.nbBuildings += 1;

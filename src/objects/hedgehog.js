@@ -35,15 +35,20 @@ export default class Hedgehog {
         return this.position;
     }
 
-    setTargetPosition(position) {
+    setTargetPosition() {
         if (!this.isAlive) {
             console.log("Hedgehog is dead");
             return
         }
 
+        const position = {
+            x: this.scene.input.activePointer.worldX,
+            y: this.scene.input.activePointer.worldY
+        }
+
         // Check if the cursor is not out of the map
-        let targetPositionX = position.x / (2 * TILE_SIZE_PX);
-        let targetPositionY = position.y / (2 * TILE_SIZE_PX);
+        let targetPositionX = position.x / (TILE_SIZE_PX);
+        let targetPositionY = position.y / (TILE_SIZE_PX);
         if (targetPositionX < 0) targetPositionX = 0;
         if (targetPositionY < 0) targetPositionY = 0;
         if (targetPositionX > MAP_SIZE[0]) targetPositionX = MAP_SIZE[0];
