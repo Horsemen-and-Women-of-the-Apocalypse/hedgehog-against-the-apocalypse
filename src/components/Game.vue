@@ -1,7 +1,7 @@
 <template>
   <div id="game">
     <div id="controls">
-      <a href="home"><button id="about">Home</button></a>
+      <a href="#/home"><button id="about">Home</button></a>
       <div id="scoreYear">
         {{ scoreDisplay.year }}
       </div>
