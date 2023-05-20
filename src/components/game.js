@@ -35,7 +35,7 @@ class BoardScene extends Phaser.Scene {
   create() {
 
     // Create entities
-    this.City = new City(MAP_SIZE, this);
+    this.city = new City(MAP_SIZE, this);
     this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, MAP_SIZE[1] / 2, 0, this);
 
     // Create map
@@ -81,7 +81,7 @@ class BoardScene extends Phaser.Scene {
     this.groundLayer.fill(0, 0, 0, MAP_SIZE[0], MAP_SIZE[1]);
     this.groundLayer.setDepth(0);
 
-    this.City.resetGrid()
+    this.city.resetGrid()
   }
 
   update() {
@@ -102,7 +102,12 @@ class BoardScene extends Phaser.Scene {
     }
 
     // Update entities
-    this.City.theCityIsGrowing();
+    this.city.theCityIsGrowing(this.hedgehog);
+
+    // Check end game
+    if (!this.hedgehog.isAlive) {
+      // this.resetMap()
+    }
   }
 }
 
@@ -118,7 +123,17 @@ const game = new Phaser.Game(config);
 // Set up resize event listener to adapt to window size changes
 window.addEventListener("resize", () => {
   const { innerWidth, innerHeight } = window;
-  game.scale.resize(innerWidth, innerHeight);
+  try {
+    game.scale.resize(innerWidth, innerHeight);
+  } catch (error) {
+    console.error(error);
+  }
 });
+
+window.onbeforeunload = function () {
+  console.log("unloading window... try to unload cached images");
+  game.cache.destroy();
+  game.destroy(false);
+}
 
 export { game };

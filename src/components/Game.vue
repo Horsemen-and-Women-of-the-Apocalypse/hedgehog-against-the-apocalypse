@@ -38,11 +38,6 @@ export default {
       console.log("Win");
     }
   }, 
-  beforeUnmount() {
-    // Destroy the game instance
-    game.destroy(true);
-  }
-
 }
 </script>
 

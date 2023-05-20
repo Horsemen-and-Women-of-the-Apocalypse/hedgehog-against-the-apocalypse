@@ -1,4 +1,5 @@
 import Position from "./position";
+import { TILE_SIZE_PX } from "../constants";
 
 export default class Hedgehog {
 
@@ -18,6 +19,7 @@ export default class Hedgehog {
         hedgehogLayer.setDepth(1);
 
         hedgehogLayer.add(this.sprite);
+        this.move(this.position);
     }
 
     getPosition() {
@@ -25,15 +27,22 @@ export default class Hedgehog {
     }
 
     move(position) {
-        const deltax = position.x * 5
-        const deltay = position.y * 5
-        if(this.sprite != undefined) {
-            this.sprite.x += deltax;
-            this.sprite.y += deltay;
+        if (!this.isAlive) {
+            console.log("Hedgehog is dead");
+            return
+        }
+
+        const deltax = position.x * 0.15
+        const deltay = position.y * 0.15
+        this.position.x += deltax;
+        this.position.y += deltay;
+        if (this.sprite != undefined) {
+            this.sprite.x = this.position.x * TILE_SIZE_PX;
+            this.sprite.y = this.position.y * TILE_SIZE_PX;
         }
     }
 
-    isAlive() {
-        return this.isAlive;
+    kill(){
+        this.isAlive = false;
     }
 }
