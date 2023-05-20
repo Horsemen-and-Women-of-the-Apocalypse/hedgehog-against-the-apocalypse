@@ -1,7 +1,9 @@
 import Position from "@/objects/position";
 
 const TILE_SIZE_PX = 32
-const MAP_SIZE = [50, 50];
+const MAP_SIZE = [40, 200];
+
+const SCROLL_SPEED = 1;
 
 const DIRECTIONS = {
     North: new Position(0, -1),
@@ -13,5 +15,6 @@ const DIRECTIONS = {
 export {
     TILE_SIZE_PX,
     MAP_SIZE,
-    DIRECTIONS
+    DIRECTIONS,
+    SCROLL_SPEED
 }
