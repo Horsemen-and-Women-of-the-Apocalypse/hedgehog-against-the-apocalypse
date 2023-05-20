@@ -1,7 +1,6 @@
 import {CITY_HEADSTART, MAP_SIZE, TILE_SIZE_PX} from '@/constants';
 
-const SIZE_OF_SQUARE_FREE_OF_BUILDINGS = 5;
-const INITIAL_BUILDING_PERCENTAGE = 0.01;
+// const INITIAL_BUILDING_PERCENTAGE = 0.00;
 const BUILDING_GROWTH_PERCENTAGE = 0.001;
 
 export default class City {
@@ -20,8 +19,8 @@ export default class City {
     resetGrid() {
         // Create a grid of size mapSize
         this.grid = [];
-        let centerX = Math.floor(MAP_SIZE.width / 2);
-        let centerY = Math.floor(MAP_SIZE.height / 2);
+        // let centerX = Math.floor(MAP_SIZE.width / 2);
+        // let centerY = Math.floor(MAP_SIZE.height / 2);
 
         for (let y = 0; y < MAP_SIZE.height; y++) {
             this.grid.push([]);
@@ -30,12 +29,7 @@ export default class City {
                 // Except for the initial buildings
                 // And if it is close to the center
                 this.grid[y].push(0);
-                if (Math.abs(x - centerX) < SIZE_OF_SQUARE_FREE_OF_BUILDINGS &&
-                    Math.abs(y - centerY) < SIZE_OF_SQUARE_FREE_OF_BUILDINGS) {
-                    continue;
-                }
-
-                if (Math.random() < INITIAL_BUILDING_PERCENTAGE) this.placeBuilding(x, y);
+                // if (Math.random() < INITIAL_BUILDING_PERCENTAGE) this.placeBuilding(x, y);
             }
         }
 

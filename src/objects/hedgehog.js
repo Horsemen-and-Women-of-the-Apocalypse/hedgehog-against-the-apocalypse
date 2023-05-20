@@ -31,16 +31,13 @@ export default class Hedgehog {
         this.sprite.setCircle(25);
 
         for (let i = 0; i < childNumber; i++) {
-            this.children.push(new Hedgehog(MAP_SIZE.width / 2, 10 + i, 0, this.scene, 0.5, 80));
+            this.children.push(new Hedgehog(defaultX, defaultY + i / 3, 0, this.scene, 0.5, 80));
         }
 
     }
 
     setTargetPosition(position) {
-        if (!this.isAlive) {
-            console.log("Hedgehog is dead");
-            return;
-        }
+        if (!this.isAlive) return;
 
         for (let i = 0; i < this.children.length; i++) {
             if (i === 0) {
@@ -50,13 +47,13 @@ export default class Hedgehog {
                 const distanceToMother = Phaser.Math.Distance.Between(this.position.x, this.position.y, this.children[i].position.x, this.children[i].position.y);
                 const distanceToBrother = Phaser.Math.Distance.Between(this.children[i - 1].position.x, this.children[i - 1].position.y, this.children[i].position.x, this.children[i].position.y);
 
-                if(distanceToMother < distanceToBrother) {
+                if (distanceToMother < distanceToBrother) {
                     this.children[i].setTargetPosition(this.position);
                 } else {
                     this.children[i].setTargetPosition(this.children[i - 1].position);
                 }
 
-                
+
             }
         }
 
@@ -85,6 +82,8 @@ export default class Hedgehog {
             child.updatePosition(true);
         }
 
+        if (!this.isAlive) return;
+
         const spriteX = this.sprite.x / TILE_SIZE_PX;
         const spriteY = this.sprite.y / TILE_SIZE_PX;
 
@@ -111,7 +110,7 @@ export default class Hedgehog {
                 }
             }
             // Play the animation if the animation is not already playing
-            if (!this.sprite.anims?.isPlaying) this.sprite.play('hedgehog');
+            if (!this.sprite?.anims?.isPlaying) this.sprite.play('hedgehog');
         }
 
         // Apply the velocity
@@ -130,9 +129,10 @@ export default class Hedgehog {
 
     }
     kill() {
+        console.log("kill child number " + this.id);
         this.isAlive = false;
 
-        if(this.parent) {
+        if (this.parent) {
             this.parent.died(this.id);
         }
         this.sprite.destroy();
