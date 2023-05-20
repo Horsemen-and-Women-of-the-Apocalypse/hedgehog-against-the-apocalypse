@@ -38,7 +38,6 @@ export default class Hedgehog {
 
     setTargetPosition(position) {
         if (!this.isAlive) {
-            console.log("Hedgehog is dead");
             return;
         }
 
@@ -131,6 +130,8 @@ export default class Hedgehog {
     }
     kill() {
         this.isAlive = false;
+
+        console.log("Hedgehog is dead : " + this.id);
 
         if(this.parent) {
             this.parent.died(this.id);

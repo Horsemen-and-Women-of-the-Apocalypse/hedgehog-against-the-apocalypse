@@ -60,7 +60,7 @@ class BoardScene extends Phaser.Scene {
 
     // Create entities
     this.city = new City(this);
-    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 5);
+    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 0);
     this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
 
     this.chunks = [];

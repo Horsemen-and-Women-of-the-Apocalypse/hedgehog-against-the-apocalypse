@@ -138,10 +138,14 @@ export default class City {
     }
 
     isHedgehogInBuilding(hedgehog, x, y) { // Need to fix Position
-        return hedgehog.position.x / TILE_SIZE_PX > x - 1 &&
-            hedgehog.position.x / TILE_SIZE_PX < x + 1 &&
-            hedgehog.position.y / TILE_SIZE_PX > y - 1 &&
-            hedgehog.position.y / TILE_SIZE_PX < y + 1;
+
+        console.log(hedgehog.position.x /32 + " - " + hedgehog.position.y /32);
+        console.log(x + " - " + (y + this.step));
+        console.log(this.step);
+
+        return hedgehog.position.x / TILE_SIZE_PX > x - 1 && hedgehog.position.x / TILE_SIZE_PX < x + 1 &&
+            hedgehog.position.y / TILE_SIZE_PX > (y + this.step) - 1 &&
+            hedgehog.position.y / TILE_SIZE_PX < (y + this.step) + 1;
     }
 
     destroy() {
