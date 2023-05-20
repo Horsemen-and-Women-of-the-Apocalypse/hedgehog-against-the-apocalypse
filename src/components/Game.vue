@@ -45,10 +45,8 @@ export default {
 #game {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   /* Custom cursor: */
+  cursor: url('./target.png'), auto;
 }
 
 #board {
