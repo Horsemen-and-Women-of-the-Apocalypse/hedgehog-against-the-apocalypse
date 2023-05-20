@@ -22,21 +22,20 @@ export default class Hedgehog {
         this.direction = direction;
         this.target = new Position(defaultX, defaultY);
         this.position = new Position(defaultX, defaultY);
-        
+
         // Add the physics sprite
-        this.sprite = scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog');
-        this.sprite.setSize(25, 25);
-        this.sprite.setScale(scale);
-
-        for(let i = 0; i < childNumber; i++) {
-            this.children.push(new Hedgehog(MAP_SIZE[0] / 2, 10 + i, 0, this.scene, 0.5, 80));
-        }
-
-        console.log(this.sprite);
-
+        this.sprite = scene.physics.add.image(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog');
         const hedgehogLayer = scene.add.layer();
         hedgehogLayer.setDepth(1);
         hedgehogLayer.add(this.sprite);
+        this.sprite.setSize(25, 25);
+        this.sprite.setScale(scale);
+        this.sprite.setCircle(scale * TILE_SIZE_PX / 3, TILE_SIZE_PX / 3, 0);
+
+        for (let i = 0; i < childNumber; i++) {
+            this.children.push(new Hedgehog(MAP_SIZE[0] / 2, 10 + i, 0, this.scene, 0.5, 80));
+        }
+
     }
 
     getPosition() {
@@ -49,7 +48,7 @@ export default class Hedgehog {
             return
         }
 
-        for(let child of this.children) {
+        for (let child of this.children) {
             child.setTargetPosition(this.position);
         }
 
@@ -75,7 +74,7 @@ export default class Hedgehog {
     updatePosition() {
         // Get sprite position
 
-        for(let child of this.children) {
+        for (let child of this.children) {
             child.updatePosition();
         }
 

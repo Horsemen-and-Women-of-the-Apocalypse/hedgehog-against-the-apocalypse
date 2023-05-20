@@ -12,8 +12,7 @@ export default class City {
     constructor(mapSize, scene) {
         this.scene = scene;
         this.mapSize = mapSize;
-        this.layer = this.scene.add.layer();
-        this.layer.setDepth(1);
+        this.spriteGroup = this.scene.physics.add.group();
     }
 
     resetGrid() {
@@ -42,13 +41,12 @@ export default class City {
     }
 
     placeBuilding(x, y) {
-        const sprite = this.scene.add.sprite(x * TILE_SIZE_PX, y * TILE_SIZE_PX, 'building');
+        const sprite = this.scene.physics.add.image(x * TILE_SIZE_PX, y * TILE_SIZE_PX, 'building');
+        this.spriteGroup.add(sprite);
+        sprite.setImmovable();
         sprite.setOrigin(0, 0);
-        this.scene.physics.world.enable(sprite);
-        sprite.body.setImmovable(true);
         
         this.grid[x][y] = sprite;
-        this.layer.add(sprite);
         this.nbBuildings += 1;
     }
 

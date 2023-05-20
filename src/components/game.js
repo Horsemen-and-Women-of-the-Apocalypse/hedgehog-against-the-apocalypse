@@ -15,10 +15,6 @@ const tilesets = {
 const TILESET = tilesets.tiles;
 
 class BoardScene extends Phaser.Scene {
-  map = null
-  layers = []
-  entities = []
-
   constructor() {
     super("BoardScene");
   }
@@ -50,16 +46,10 @@ class BoardScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.cameraTarget, true, 0.05, 0.05);
     this.cameras.main.setZoom(2);
     this.cameras.main.setBackgroundColor("#000000");
-    this.cameras.main.setBounds(
-      0,
-      0,
-      TILE_SIZE_PX * MAP_SIZE[0],
-      Number.POSITIVE_INFINITY
-    );
+    this.cameras.main.setBounds(0, 0, TILE_SIZE_PX * MAP_SIZE[0], Number.POSITIVE_INFINITY);
 
     // Mouse inputs
     this.input.on('pointermove', () => {
-
       const position = {
         x: this.input.activePointer.worldX,
         y: this.input.activePointer.worldY
@@ -69,7 +59,10 @@ class BoardScene extends Phaser.Scene {
     });
 
     // Physics
-    this.physics.add.collider(this.hedgehog.sprite, this.city.testSprite);
+    this.physics.add.collider(this.hedgehog.sprite, this.city.spriteGroup);
+    this.hedgehog.children.forEach((child) => {
+      this.physics.add.collider(child.sprite, this.city.spriteGroup);
+    });
 
   }
 
@@ -93,14 +86,12 @@ class BoardScene extends Phaser.Scene {
     );
 
     this.groundLayer = this.map.createBlankLayer(`groundLayer`, tiles);
+
     // Fill the layer with grass tiles
     this.groundLayer.fill(0, 0, 0, MAP_SIZE[0], MAP_SIZE[1]);
     this.groundLayer.setDepth(0);
 
     this.city.resetGrid()
-
-
-
   }
 
   update() {
@@ -123,6 +114,10 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: { debug: true }
+  },
+  fps: {
+    target: 60,
+    forceSetTimeOut: true
   },
   scene: BoardScene
 };
