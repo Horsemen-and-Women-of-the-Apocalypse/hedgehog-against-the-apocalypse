@@ -31,7 +31,7 @@ export default class Hedgehog {
         this.sprite.setCircle(25);
 
         for (let i = 0; i < childNumber; i++) {
-            this.children.push(new Hedgehog(defaultX, defaultY + i / 3, 0, this.scene, 0.5, 80));
+            this.children.push(new Hedgehog(defaultX, defaultY + i / 3, 0, this.scene, 0.5, 80, 0, i + 1, this));
         }
 
     }
@@ -134,7 +134,7 @@ export default class Hedgehog {
 
         console.log("Hedgehog is dead : " + this.id);
 
-        if(this.parent) {
+        if (this.parent) {
             this.parent.died(this.id);
         }
         this.sprite.destroy();

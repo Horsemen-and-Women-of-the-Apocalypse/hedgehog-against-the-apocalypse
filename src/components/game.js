@@ -58,15 +58,15 @@ class BoardScene extends Phaser.Scene {
     this.anims.create({
       key: 'building_1',
       frames: [
-        { key: 'building_1_ani1', duration: 4000 },
+        { key: 'building_1_ani1', duration: 2000 },
         { key: 'building_1_ani2' },
       ],
-      frameRate: 2,
+      frameRate: 10,
       repeat: 0
     });
 
     // Create entities
-    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 0, 0);
+    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 5, 0);
     this.city = new City(this, this.hedgehog);
     this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
 
@@ -123,7 +123,7 @@ class BoardScene extends Phaser.Scene {
     // Scroll map
     if (!(this.scrollDistance % TILE_SIZE_PX)) {
       const step = this.scrollDistance / TILE_SIZE_PX,
-        rowToScroll = step % MAP_SIZE.height;
+      rowToScroll = step % MAP_SIZE.height;
 
       if (this.chunks[rowToScroll]) {
         this.chunks[rowToScroll].move();
@@ -140,10 +140,10 @@ class BoardScene extends Phaser.Scene {
   }
 
   calculateScore() {
-    const step = this.scrollDistance / TILE_SIZE_PX
-    const year = Math.floor(step / 3) + 2023;
+    const stepScore = this.scrollDistance / TILE_SIZE_PX
+    const year = Math.floor(stepScore / 3) + 2023;
     score.year = year
-    score.score = step * 10
+    score.score = stepScore * 10
   }
 }
 
@@ -153,9 +153,6 @@ const config = {
   height: window.innerHeight,
   physics: {
     default: 'arcade',
-    arcade: {
-      debug: true
-    }
   },
   pixelArt: true,
   fps: {

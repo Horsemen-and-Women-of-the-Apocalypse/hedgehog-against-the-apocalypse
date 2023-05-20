@@ -65,7 +65,7 @@ export default class City {
         })
     }
 
-    placeBuilding(x, y, currentStep = this.step) {
+    placeBuilding(x, y) {
         const maxSprites = MAP_SIZE.width * MAP_SIZE.height / 2;
 
         if (this.grid[y][x] === 1) {
@@ -73,11 +73,35 @@ export default class City {
         }
 
         this.grid[y][x] = 1;
+        const stepSaved = this.step;
 
         if (this.sprites.length > maxSprites) {
-            this.sprites[this.moveSpriteIterator].setPosition(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX);
-            this.sprites[this.moveSpriteIterator].play('building_1');
+            // Move the sprite
+            // Remove from the group first to prevent collisions
+            const spriteToMove = this.sprites[this.moveSpriteIterator];
+            this.spriteGroup.remove(spriteToMove);
+            spriteToMove.setPosition(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX);
+            spriteToMove.play('building_1');
             this.moveSpriteIterator = (this.moveSpriteIterator + 1) % maxSprites;
+
+            // Delete event listener
+            spriteToMove.removeAllListeners('animationcomplete');
+            // Re-add event listener
+            spriteToMove.on('animationcomplete', () => {
+                this.spriteGroup.add(spriteToMove);
+                spriteToMove.setImmovable();
+
+                // Check if the hedgehog is in the new building
+                for (let child of this.hedgehog.children) {
+                    if (this.isHedgehogInBuilding(child, x, y, stepSaved)) {
+                        child.kill();
+                    }
+                }
+
+                if (this.isHedgehogInBuilding(this.hedgehog, x, y, stepSaved)) {
+                    this.hedgehog.kill();
+                }
+            })
         } else {
             const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani1')
             sprite.play('building_1');
@@ -88,12 +112,12 @@ export default class City {
                 sprite.setImmovable();
                 // Check if the hedgehog is in the new building
                 for (let child of this.hedgehog.children) {
-                    if (this.isHedgehogInBuilding(child, x, y, currentStep)) {
+                    if (this.isHedgehogInBuilding(child, x, y, stepSaved)) {
                         child.kill();
                     }
                 }
 
-                if (this.isHedgehogInBuilding(this.hedgehog, x, y, currentStep)) {
+                if (this.isHedgehogInBuilding(this.hedgehog, x, y, stepSaved)) {
                     this.hedgehog.kill();
                 }
             });
@@ -134,7 +158,7 @@ export default class City {
 
     isHedgehogInBuilding(hedgehog, x, y, step) {
 
-        const yStep = y + step + 2;
+        const yStep = y + step + CITY_HEADSTART;
 
         const hedgehogX = hedgehog.position.x / TILE_SIZE_PX
         const hedgehogY = hedgehog.position.y / TILE_SIZE_PX;
