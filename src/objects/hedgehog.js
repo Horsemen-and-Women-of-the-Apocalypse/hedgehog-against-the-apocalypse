@@ -6,6 +6,8 @@ export default class Hedgehog {
 
     SPEED = 0;
 
+    children = []
+
     /**
      * 
      * @param {*} defaultX 
@@ -13,15 +15,25 @@ export default class Hedgehog {
      * @param {*} direction 0 - North 1 - East 2 - South 3 - West
      * @param {*} scene
      */
-    constructor(defaultX, defaultY, direction, scene, scale, speed, target) {
+    constructor(defaultX, defaultY, direction, scene, scale, speed, childNumber) {
         this.SPEED = speed;
         this.scene = scene;
         this.isAlive = true;
         this.direction = direction;
         this.target = new Position(defaultX, defaultY);
         this.position = new Position(defaultX, defaultY);
+        
         // Add the physics sprite
         this.sprite = scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog');
+        this.sprite.setSize(25, 25);
+        this.sprite.setScale(scale);
+
+        for(let i = 0; i < childNumber; i++) {
+            this.children.push(new Hedgehog(MAP_SIZE[0] / 2, 10 + i, 0, this.scene, 0.5, 80));
+        }
+
+        console.log(this.sprite);
+
         const hedgehogLayer = scene.add.layer();
         hedgehogLayer.setDepth(1);
         hedgehogLayer.add(this.sprite);
@@ -31,15 +43,14 @@ export default class Hedgehog {
         return this.position;
     }
 
-    setTargetPosition() {
+    setTargetPosition(position) {
         if (!this.isAlive) {
             console.log("Hedgehog is dead");
             return
         }
 
-        const position = {
-            x: this.scene.input.activePointer.worldX,
-            y: this.scene.input.activePointer.worldY
+        for(let child of this.children) {
+            child.setTargetPosition(this.position);
         }
 
         // Check if the cursor is not out of the map
@@ -54,7 +65,6 @@ export default class Hedgehog {
         this.target.x = targetPositionX;
         this.target.y = targetPositionY;
 
-
         // Update the direction of the hedgehog
         const spriteX = this.sprite.x / TILE_SIZE_PX;
         const spriteY = this.sprite.y / TILE_SIZE_PX;
@@ -64,6 +74,11 @@ export default class Hedgehog {
 
     updatePosition() {
         // Get sprite position
+
+        for(let child of this.children) {
+            child.updatePosition();
+        }
+
         const spriteX = this.sprite.x / TILE_SIZE_PX;
         const spriteY = this.sprite.y / TILE_SIZE_PX;
 
