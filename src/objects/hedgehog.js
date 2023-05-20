@@ -111,7 +111,7 @@ export default class Hedgehog {
                 }
             }
             // Play the animation if the animation is not already playing
-            if (!this.sprite.anims.isPlaying) this.sprite.play('hedgehog');
+            if (!this.sprite.anims?.isPlaying) this.sprite.play('hedgehog');
         }
 
         // Apply the velocity

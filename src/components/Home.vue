@@ -1,18 +1,35 @@
 <template>
     <div id="home">
+        <div
+            id="abouts"
+            v-if="displayAbout"
+            @click="displayAbout = false"
+        >
+            <About />
+        </div>
         <div id="pannel">
             <h1>Hedgehog against the apocalypse</h1>
             <a href="#/game"><button id="play">Play</button></a>
-            <a href=""><button id="about">About</button></a>
+            <button
+                id="about"
+                @click="displayAbout = true"
+            >About</button>
         </div>
     </div>
 </template>
 
 <script>
+import About from "./About.vue";
 
 export default {
+    components: {
+        About
+    },
     name: "my-home",
     data() {
+        return {
+            displayAbout: false
+        }
     },
     computed: {
     }
