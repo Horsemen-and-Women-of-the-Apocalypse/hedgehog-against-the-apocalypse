@@ -57,17 +57,6 @@ class BoardScene extends Phaser.Scene {
       Number.POSITIVE_INFINITY
     );
 
-    // Mouse inputs
-    this.input.on('pointermove', () => {
-
-      const position = {
-        x: this.input.activePointer.worldX,
-        y: this.input.activePointer.worldY
-      }
-
-      this.hedgehog.setTargetPosition(position);
-    });
-
     // Physics
     this.physics.add.collider(this.hedgehog.sprite, this.city.testSprite);
 
@@ -105,6 +94,14 @@ class BoardScene extends Phaser.Scene {
 
   update() {
     this.scrollDistance += SCROLL_SPEED;
+
+    // Set target position
+    const position = {
+      x: this.input.activePointer.worldX,
+      y: this.input.activePointer.worldY
+    }
+
+    this.hedgehog.setTargetPosition(position);
 
     // Update entities
     this.city.theCityIsGrowing(this.hedgehog);

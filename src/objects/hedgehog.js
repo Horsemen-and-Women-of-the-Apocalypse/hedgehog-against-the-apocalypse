@@ -5,6 +5,8 @@ import Phaser from "phaser";
 export default class Hedgehog {
 
     SPEED = 0;
+    SPEED_MIN = 20;
+    SPEED_MAX = 100;
 
     children = []
 
@@ -74,21 +76,37 @@ export default class Hedgehog {
         this.sprite.rotation = angle + 270 * (3.14 / 180);
     }
 
-    updatePosition() {
+    updatePosition(isChild) {
         // Get sprite position
 
         for(let child of this.children) {
-            child.updatePosition();
+            child.updatePosition(true);
         }
 
         const spriteX = this.sprite.x / TILE_SIZE_PX;
         const spriteY = this.sprite.y / TILE_SIZE_PX;
 
         const distance = Phaser.Math.Distance.Between(spriteX, spriteY, this.target.x, this.target.y);
+        
+        
+        
         if (distance < 0.4) {
+            
+            if(isChild) {
+                this.SPEED = this.SPEED_MIN;
+    
+                
+            }
+
             // stop the sprite
             this.scene.physics.moveTo(this.sprite, spriteX, spriteY, 0);
             return;
+        } else {
+            if(isChild) {
+                this.SPEED = this.SPEED + (distance > 0.4 ? 0.7 * distance : -0.7 * distance);
+
+                console.log(this.SPEED);
+            }
         }
 
         // Apply the velocity
