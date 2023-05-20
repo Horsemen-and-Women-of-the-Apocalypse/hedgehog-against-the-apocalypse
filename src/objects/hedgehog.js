@@ -8,6 +8,7 @@ export default class Hedgehog {
     SPEED_MIN = 20;
     SPEED_MAX = 150;
 
+    id = 0;
     children = []
 
     /**
@@ -17,7 +18,9 @@ export default class Hedgehog {
      * @param {*} direction 0 - North 1 - East 2 - South 3 - West
      * @param {*} scene
      */
-    constructor(defaultX, defaultY, direction, scene, scale, speed, childNumber) {
+    constructor(defaultX, defaultY, direction, scene, scale, speed, childNumber, id, parent) {
+        this.parent = parent;
+        this.id = id;
         this.SPEED = speed;
         this.scene = scene;
         this.isAlive = true;
@@ -35,13 +38,9 @@ export default class Hedgehog {
         this.sprite.setCircle(25);
 
         for (let i = 0; i < childNumber; i++) {
-            this.children.push(new Hedgehog(MAP_SIZE[0] / 2, 10 + i, 0, this.scene, 0.5, 80));
+            this.children.push(new Hedgehog(MAP_SIZE[0] / 2, 10 + i, 0, this.scene, 0.5, 80, 0, i + 1, this));
         }
 
-    }
-
-    getPosition() {
-        return this.position;
     }
 
     setTargetPosition(position) {
@@ -54,7 +53,17 @@ export default class Hedgehog {
             if (i == 0) {
                 this.children[i].setTargetPosition(this.position);
             } else {
-                this.children[i].setTargetPosition(this.children[i - 1].position);
+
+                const distanceToMother = Phaser.Math.Distance.Between(this.position.x, this.position.y, this.children[i].position.x, this.children[i].position.y);
+                const distanceToBrother = Phaser.Math.Distance.Between(this.children[i - 1].position.x, this.children[i - 1].position.y, this.children[i].position.x, this.children[i].position.y);
+
+                if(distanceToMother < distanceToBrother) {
+                    this.children[i].setTargetPosition(this.position);
+                } else {
+                    this.children[i].setTargetPosition(this.children[i - 1].position);
+                }
+
+                
             }
         }
 
@@ -127,5 +136,15 @@ export default class Hedgehog {
     }
     kill() {
         this.isAlive = false;
+
+        if(this.parent) {
+            this.parent.died(this.id);
+        }
+        this.sprite.destroy();
+    }
+
+    died(id) {
+        const index = this.children.findIndex(child => child.id == id);
+        this.children.splice(index, 1);
     }
 }

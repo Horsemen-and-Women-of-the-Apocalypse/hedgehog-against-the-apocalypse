@@ -69,8 +69,14 @@ export default class City {
                             this.placeBuilding(buildingPos.x, buildingPos.y);
 
                             // Check if the hedgehog is in the new building
+
+                            for(let child of hedgehog.children) {
+                                if (this.isHedgehogInBuilding(child, buildingPos.x, buildingPos.y)) {
+                                    child.kill();
+                                }
+                            }
+
                             if (this.isHedgehogInBuilding(hedgehog, buildingPos.x, buildingPos.y)) {
-                                console.log("Hedgehog is in the building");
                                 hedgehog.kill();
                             }
                         }
@@ -90,11 +96,11 @@ export default class City {
         return adjacentBuildings;
     }
 
-    isHedgehogInBuilding(hedgehog, x, y) {
-        return hedgehog.getPosition().x > x - 1 &&
-            hedgehog.getPosition().x < x + 1 &&
-            hedgehog.getPosition().y > y - 1 &&
-            hedgehog.getPosition().y < y + 1;
+    isHedgehogInBuilding(hedgehog, x, y) { // Need to fix Position
+        return hedgehog.position.x / TILE_SIZE_PX > x - 1 &&
+            hedgehog.position.x / TILE_SIZE_PX < x + 1 &&
+            hedgehog.position.y / TILE_SIZE_PX > y - 1 &&
+            hedgehog.position.y / TILE_SIZE_PX < y + 1;
     }
 
     destroy() {
