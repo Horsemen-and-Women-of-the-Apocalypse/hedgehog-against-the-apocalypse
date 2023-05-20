@@ -1,7 +1,7 @@
 import Position from "@/objects/position";
 
 const TILE_SIZE_PX = 32
-const MAP_SIZE = [20, 10];
+const MAP_SIZE = [50, 50];
 
 const SCROLL_SPEED = 1;
 
