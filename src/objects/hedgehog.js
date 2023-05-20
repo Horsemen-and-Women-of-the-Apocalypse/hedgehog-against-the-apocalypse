@@ -1,5 +1,5 @@
 import Position from "./position";
-import { TILE_SIZE_PX, MAP_SIZE } from "../constants";
+import { TILE_SIZE_PX, MAP_SIZE } from "@/constants";
 import Phaser from "phaser";
 
 export default class Hedgehog {
@@ -10,13 +10,6 @@ export default class Hedgehog {
 
     children = []
 
-    /**
-     * 
-     * @param {*} defaultX 
-     * @param {*} defaultY 
-     * @param {*} direction 0 - North 1 - East 2 - South 3 - West
-     * @param {*} scene
-     */
     constructor(defaultX, defaultY, direction, scene, scale, speed, childNumber) {
         this.SPEED = speed;
         this.scene = scene;
@@ -35,23 +28,19 @@ export default class Hedgehog {
         this.sprite.setCircle(25);
 
         for (let i = 0; i < childNumber; i++) {
-            this.children.push(new Hedgehog(MAP_SIZE[0] / 2, 10 + i, 0, this.scene, 0.5, 80));
+            this.children.push(new Hedgehog(MAP_SIZE.width / 2, 10 + i, 0, this.scene, 0.5, 80));
         }
 
-    }
-
-    getPosition() {
-        return this.position;
     }
 
     setTargetPosition(position) {
         if (!this.isAlive) {
             console.log("Hedgehog is dead");
-            return
+            return;
         }
 
         for (let i = 0; i < this.children.length; i++) {
-            if (i == 0) {
+            if (i === 0) {
                 this.children[i].setTargetPosition(this.position);
             } else {
                 this.children[i].setTargetPosition(this.children[i - 1].position);
@@ -63,8 +52,7 @@ export default class Hedgehog {
         let targetPositionY = position.y / (TILE_SIZE_PX);
         if (targetPositionX < 0) targetPositionX = 0;
         if (targetPositionY < 0) targetPositionY = 0;
-        if (targetPositionX > MAP_SIZE[0]) targetPositionX = MAP_SIZE[0];
-        if (targetPositionY > MAP_SIZE[1]) targetPositionY = MAP_SIZE[1];
+        if (targetPositionX > MAP_SIZE.width) targetPositionX = MAP_SIZE.width;
 
         // Update the target position
         this.target.x = targetPositionX;

@@ -1,7 +1,9 @@
 import Phaser from "phaser";
 import Hedgehog from "../objects/hedgehog";
 import City from "../objects/city";
-import { TILE_SIZE_PX, MAP_SIZE, SCROLL_SPEED } from "../constants";
+import Chunk from '../objects/chunk';
+
+import { TILE_SIZE_PX, MAP_SIZE, SCROLL_SPEED } from "@/constants";
 
 const tilesets = {
   tiles: {
@@ -30,6 +32,7 @@ class BoardScene extends Phaser.Scene {
     this.load.image('building_1_ani0', 'assets/sprites/city/Concrete_Tiles.jpg');
     this.load.image('building_1_ani1', 'assets/sprites/city/Building_1_0000.png');
     this.load.image('building_1_ani2', 'assets/sprites/city/Building_1_0001.png');
+    this.load.image('grass', 'assets/sprites/nature/grass.jpg');
 
     this.scrollDistance = 0;
   }
@@ -56,9 +59,15 @@ class BoardScene extends Phaser.Scene {
     });
 
     // Create entities
-    this.city = new City(MAP_SIZE, this);
-    this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, 8, 0, this, 1, 100, 5);
-    this.cameraTarget = this.add.sprite(this.hedgehog.getPosition().x * TILE_SIZE_PX, 200, "");
+    this.city = new City(this);
+    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 5);
+    this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
+
+    this.chunks = [];
+    for (let y = 0; y < MAP_SIZE.height; y ++) {
+      this.chunks.push(new Chunk(this, y))
+    }
+    this.chunks[0].move(0);
 
     // Create map
     this.resetMap();
@@ -67,7 +76,7 @@ class BoardScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.cameraTarget, true, 0.05, 0.05);
     this.cameras.main.setZoom(2);
     this.cameras.main.setBackgroundColor("#000000");
-    this.cameras.main.setBounds(0, 0, TILE_SIZE_PX * MAP_SIZE[0], Number.POSITIVE_INFINITY);
+    this.cameras.main.setBounds(0, 0, TILE_SIZE_PX * MAP_SIZE.width, Number.POSITIVE_INFINITY);
 
     // Physics
     this.physics.add.collider(this.hedgehog.sprite, this.city.spriteGroup);
@@ -82,25 +91,9 @@ class BoardScene extends Phaser.Scene {
     this.map = this.make.tilemap({
       tileWidth: TILE_SIZE_PX,
       tileHeight: TILE_SIZE_PX,
-      width: MAP_SIZE[0],
-      height: MAP_SIZE[1]
+      width: MAP_SIZE.width,
+      height: Number.POSITIVE_INFINITY
     });
-
-    // Load tiles and reset layers
-    const tiles = this.map.addTilesetImage(
-      TILESET.name,
-      undefined,
-      100,
-      100,
-      0,
-      0
-    );
-
-    this.groundLayer = this.map.createBlankLayer(`groundLayer`, tiles);
-
-    // Fill the layer with grass tiles
-    this.groundLayer.fill(0, 0, 0, MAP_SIZE[0], MAP_SIZE[1]);
-    this.groundLayer.setDepth(0);
 
     this.city.resetGrid()
   }
@@ -120,9 +113,18 @@ class BoardScene extends Phaser.Scene {
     this.city.theCityIsGrowing(this.hedgehog);
     this.hedgehog.updatePosition();
 
-    // Check end game
-    // if (!this.hedgehog.isAlive) {
-    // }
+    if(!(this.scrollDistance % TILE_SIZE_PX)) {
+      const step = this.scrollDistance / TILE_SIZE_PX,
+          rowToScroll = step % MAP_SIZE.height;
+
+      if (this.chunks[rowToScroll]) {
+        this.chunks[rowToScroll].move();
+      }
+
+      this.city.nextRow();
+    }
+
+    this.cameraTarget.setPosition(this.hedgehog.position.x, this.scrollDistance + 500)
   }
 }
 
@@ -133,7 +135,9 @@ const config = {
   physics: {
     default: 'arcade'
   },
+  pixelArt: true,
   fps: {
+    min: 30,
     target: 60,
     forceSetTimeOut: true
   },
