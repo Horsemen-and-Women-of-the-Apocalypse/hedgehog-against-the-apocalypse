@@ -6,7 +6,7 @@ export default class Hedgehog {
 
     SPEED = 0;
     SPEED_MIN = 20;
-    SPEED_MAX = 100;
+    SPEED_MAX = 150;
 
     children = []
 
@@ -26,19 +26,6 @@ export default class Hedgehog {
         this.position = new Position(defaultX, defaultY);
 
         // Add the physics sprite
-
-        this.scene.anims.create({
-            key: 'hedgehog',
-            frames: [
-                { key: 'hedgehog_ani0' },
-                { key: 'hedgehog_ani1' },
-            ],
-            frameRate: 2,
-            repeat: -1
-        });
-
-
-
         this.sprite = this.scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog_ani0').play('hedgehog');
         const hedgehogLayer = this.scene.add.layer();
         hedgehogLayer.setDepth(1);
@@ -115,7 +102,12 @@ export default class Hedgehog {
             return;
         } else {
             if (isChild) {
-                this.SPEED = this.SPEED + (distance > 0.4 ? 0.7 * distance : -0.7 * distance);
+                if(this.SPEED + 0.7 * distance > this.SPEED_MAX) {
+                    this.SPEED = this.SPEED_MAX;
+                } else {
+                    this.SPEED = this.SPEED + (distance > 0.4 ? 0.7 * distance : -0.7 * distance);
+                    console.log(distance);
+                } 
             }
         }
 

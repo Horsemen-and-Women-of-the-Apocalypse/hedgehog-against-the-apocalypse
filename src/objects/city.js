@@ -41,7 +41,11 @@ export default class City {
     }
 
     placeBuilding(x, y) {
-        const sprite = this.scene.physics.add.image(x * TILE_SIZE_PX, y * TILE_SIZE_PX, 'building');
+
+        const spriteGround = this.scene.physics.add.sprite(x * TILE_SIZE_PX + 16, y * TILE_SIZE_PX + 16, 'building_1_ani0')
+        spriteGround.setScale(32/100);
+        const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, y * TILE_SIZE_PX, 'building_1_ani1').play('building_1');
+        sprite.setScale(32/256);
         this.spriteGroup.add(sprite);
         sprite.setImmovable();
         sprite.setOrigin(0, 0);

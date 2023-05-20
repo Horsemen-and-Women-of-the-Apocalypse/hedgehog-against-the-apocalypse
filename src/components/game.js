@@ -6,9 +6,9 @@ import { TILE_SIZE_PX, MAP_SIZE, SCROLL_SPEED } from "../constants";
 const tilesets = {
   tiles: {
     name: "tiles",
-    path: "/assets/sprites/grass.png",
+    path: "/assets/sprites/nature/grass.jpg",
     nbImagesPerRow: 1,
-    imageSize: [32, 32]
+    imageSize: [100, 100]
   },
 };
 
@@ -26,13 +26,36 @@ class BoardScene extends Phaser.Scene {
     });
     this.load.image('hedgehog_ani0', 'assets/sprites/animals/Hedgehog0000.png');
     this.load.image('hedgehog_ani1', 'assets/sprites/animals/Hedgehog0001.png');
-    this.load.image('building', 'assets/sprites/building.png');
+
+    this.load.image('building_1_ani0', 'assets/sprites/city/Concrete_Tiles.jpg');
+    this.load.image('building_1_ani1', 'assets/sprites/city/Building_1_0000.png');
+    this.load.image('building_1_ani2', 'assets/sprites/city/Building_1_0001.png');
 
     this.scrollDistance = 0;
   }
 
   create() {
     
+    this.anims.create({
+      key: 'hedgehog',
+      frames: [
+          { key: 'hedgehog_ani0' },
+          { key: 'hedgehog_ani1' },
+      ],
+      frameRate: 2,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'building_1',
+      frames: [
+          { key: 'building_1_ani1' },
+          { key: 'building_1_ani2', duration: 4000 },
+      ],
+      frameRate: 2,
+      repeat: 0
+    });
+
     // Create entities
     this.city = new City(MAP_SIZE, this);
     this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, 8, 0, this, 1, 100, 5);
@@ -68,8 +91,8 @@ class BoardScene extends Phaser.Scene {
     const tiles = this.map.addTilesetImage(
       TILESET.name,
       undefined,
-      TILE_SIZE_PX,
-      TILE_SIZE_PX,
+      100,
+      100,
       0,
       0
     );
