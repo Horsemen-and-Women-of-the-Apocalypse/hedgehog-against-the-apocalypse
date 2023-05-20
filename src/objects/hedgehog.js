@@ -24,7 +24,7 @@ export default class Hedgehog {
         this.direction = direction;
         this.target = new Position(defaultX, defaultY);
         this.position = new Position(defaultX, defaultY);
-        
+
         // Add the physics sprite
 
         this.scene.anims.create({
@@ -37,17 +37,20 @@ export default class Hedgehog {
             repeat: -1
         });
 
-        this.sprite = this.scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog_ani0').play('hedgehog');
-        this.sprite.setSize(25, 25);
-        this.sprite.setScale(scale/4);
 
-        for(let i = 0; i < childNumber; i++) {
+
+        this.sprite = this.scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog_ani0').play('hedgehog');
+        const hedgehogLayer = this.scene.add.layer();
+        hedgehogLayer.setDepth(1);
+        hedgehogLayer.add(this.sprite);
+        this.sprite.setSize(25, 25);
+        this.sprite.setScale(scale / 4);
+        this.sprite.setCircle(25);
+
+        for (let i = 0; i < childNumber; i++) {
             this.children.push(new Hedgehog(MAP_SIZE[0] / 2, 10 + i, 0, this.scene, 0.5, 80));
         }
 
-        const hedgehogLayer = scene.add.layer();
-        hedgehogLayer.setDepth(1);
-        hedgehogLayer.add(this.sprite);
     }
 
     getPosition() {
@@ -60,8 +63,8 @@ export default class Hedgehog {
             return
         }
 
-        for(let i = 0; i < this.children.length; i++) {
-            if(i == 0) {
+        for (let i = 0; i < this.children.length; i++) {
+            if (i == 0) {
                 this.children[i].setTargetPosition(this.position);
             } else {
                 this.children[i].setTargetPosition(this.children[i - 1].position);
@@ -90,7 +93,7 @@ export default class Hedgehog {
     updatePosition(isChild) {
         // Get sprite position
 
-        for(let child of this.children) {
+        for (let child of this.children) {
             child.updatePosition(true);
         }
 
@@ -98,20 +101,20 @@ export default class Hedgehog {
         const spriteY = this.sprite.y / TILE_SIZE_PX;
 
         const distance = Phaser.Math.Distance.Between(spriteX, spriteY, this.target.x, this.target.y);
-        
-        
-        
+
+
+
         if (distance < 0.4) {
-            
-            if(isChild) {
-                this.SPEED = this.SPEED_MIN;          
+
+            if (isChild) {
+                this.SPEED = this.SPEED_MIN;
             }
 
             // stop the sprite
             this.scene.physics.moveTo(this.sprite, spriteX, spriteY, 0);
             return;
         } else {
-            if(isChild) {
+            if (isChild) {
                 this.SPEED = this.SPEED + (distance > 0.4 ? 0.7 * distance : -0.7 * distance);
             }
         }
