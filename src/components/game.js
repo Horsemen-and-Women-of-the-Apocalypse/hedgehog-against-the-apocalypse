@@ -16,6 +16,11 @@ const tilesets = {
 
 const TILESET = tilesets.tiles;
 
+const score = {
+  year: 2023,
+  score: 0,
+}
+
 class BoardScene extends Phaser.Scene {
   constructor() {
     super("BoardScene");
@@ -38,11 +43,13 @@ class BoardScene extends Phaser.Scene {
   }
 
   create() {
+    this.input.setDefaultCursor("url('assets/sprites/target.png')16 16, pointer");
+
     this.anims.create({
       key: 'hedgehog',
       frames: [
-          { key: 'hedgehog_ani0' },
-          { key: 'hedgehog_ani1' },
+        { key: 'hedgehog_ani0' },
+        { key: 'hedgehog_ani1' },
       ],
       frameRate: 8,
       repeat: -1
@@ -51,8 +58,8 @@ class BoardScene extends Phaser.Scene {
     this.anims.create({
       key: 'building_1',
       frames: [
-          { key: 'building_1_ani1' },
-          { key: 'building_1_ani2', duration: 4000 },
+        { key: 'building_1_ani1' },
+        { key: 'building_1_ani2', duration: 4000 },
       ],
       frameRate: 2,
       repeat: 0
@@ -60,11 +67,11 @@ class BoardScene extends Phaser.Scene {
 
     // Create entities
     this.city = new City(this);
-    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 0);
+    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 0, 0);
     this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
 
     this.chunks = [];
-    for (let y = 0; y < MAP_SIZE.height; y ++) {
+    for (let y = 0; y < MAP_SIZE.height; y++) {
       this.chunks.push(new Chunk(this, y))
     }
     this.chunks[0].move(0);
@@ -113,9 +120,10 @@ class BoardScene extends Phaser.Scene {
     this.city.theCityIsGrowing(this.hedgehog);
     this.hedgehog.updatePosition();
 
-    if(!(this.scrollDistance % TILE_SIZE_PX)) {
+    // Scroll map
+    if (!(this.scrollDistance % TILE_SIZE_PX)) {
       const step = this.scrollDistance / TILE_SIZE_PX,
-          rowToScroll = step % MAP_SIZE.height;
+        rowToScroll = step % MAP_SIZE.height;
 
       if (this.chunks[rowToScroll]) {
         this.chunks[rowToScroll].move();
@@ -124,7 +132,18 @@ class BoardScene extends Phaser.Scene {
       this.city.nextRow();
     }
 
+    // Scroll camera
     this.cameraTarget.setPosition(this.hedgehog.position.x, this.scrollDistance + 500)
+
+    // Update scores
+    this.calculateScore();
+  }
+
+  calculateScore() {
+    const step = this.scrollDistance / TILE_SIZE_PX
+    const year = Math.floor(step / 3) + 2023;
+    score.year = year
+    score.score = step * 10
   }
 }
 
@@ -133,7 +152,10 @@ const config = {
   width: window.innerWidth,
   height: window.innerHeight,
   physics: {
-    default: 'arcade'
+    default: 'arcade',
+    arcade: {
+      debug: true
+    }
   },
   pixelArt: true,
   fps: {
@@ -144,22 +166,6 @@ const config = {
   scene: BoardScene
 };
 
-const game = new Phaser.Game(config);
 
-// Set up resize event listener to adapt to window size changes
-window.addEventListener("resize", () => {
-  const { innerWidth, innerHeight } = window;
-  try {
-    game.scale.resize(innerWidth, innerHeight);
-  } catch (error) {
-    console.error(error);
-  }
-});
 
-window.onbeforeunload = function () {
-  console.log("unloading window... try to unload cached images");
-  game.cache.destroy();
-  game.destroy(true);
-}
-
-export { game };
+export { config, score };

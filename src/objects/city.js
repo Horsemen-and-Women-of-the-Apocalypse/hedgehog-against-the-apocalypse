@@ -1,7 +1,6 @@
 import {CITY_HEADSTART, MAP_SIZE, TILE_SIZE_PX} from '@/constants';
 
-const SIZE_OF_SQUARE_FREE_OF_BUILDINGS = 5;
-const INITIAL_BUILDING_PERCENTAGE = 0.01;
+// const INITIAL_BUILDING_PERCENTAGE = 0.00;
 const BUILDING_GROWTH_PERCENTAGE = 0.001;
 
 export default class City {
@@ -20,8 +19,8 @@ export default class City {
     resetGrid() {
         // Create a grid of size mapSize
         this.grid = [];
-        let centerX = Math.floor(MAP_SIZE.width / 2);
-        let centerY = Math.floor(MAP_SIZE.height / 2);
+        // let centerX = Math.floor(MAP_SIZE.width / 2);
+        // let centerY = Math.floor(MAP_SIZE.height / 2);
 
         for (let y = 0; y < MAP_SIZE.height; y++) {
             this.grid.push([]);
@@ -30,12 +29,7 @@ export default class City {
                 // Except for the initial buildings
                 // And if it is close to the center
                 this.grid[y].push(0);
-                if (Math.abs(x - centerX) < SIZE_OF_SQUARE_FREE_OF_BUILDINGS &&
-                    Math.abs(y - centerY) < SIZE_OF_SQUARE_FREE_OF_BUILDINGS) {
-                    continue;
-                }
-
-                if (Math.random() < INITIAL_BUILDING_PERCENTAGE) this.placeBuilding(x, y);
+                // if (Math.random() < INITIAL_BUILDING_PERCENTAGE) this.placeBuilding(x, y);
             }
         }
 
@@ -137,15 +131,15 @@ export default class City {
         return adjacentBuildings;
     }
 
-    isHedgehogInBuilding(hedgehog, x, y) { // Need to fix Position
+    isHedgehogInBuilding(hedgehog, x, y) {
 
-        console.log(hedgehog.position.x /32 + " - " + hedgehog.position.y /32);
-        console.log(x + " - " + (y + this.step));
-        console.log(this.step);
+        const yStep = y + this.step + 2;
 
-        return hedgehog.position.x / TILE_SIZE_PX > x - 1 && hedgehog.position.x / TILE_SIZE_PX < x + 1 &&
-            hedgehog.position.y / TILE_SIZE_PX > (y + this.step) - 1 &&
-            hedgehog.position.y / TILE_SIZE_PX < (y + this.step) + 1;
+        const hedgehogX = hedgehog.position.x / TILE_SIZE_PX
+        const hedgehogY = hedgehog.position.y / TILE_SIZE_PX;
+
+        return  hedgehogX >= x     && hedgehogX < x + 1 &&
+                hedgehogY >= yStep && hedgehogY < yStep + 1;
     }
 
     destroy() {

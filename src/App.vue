@@ -1,14 +1,14 @@
 <template>
-  <Game/>
+  <Router/>
 </template>
 
 <script>
-import Game from './components/Game.vue'
+import Router from './components/Router.vue'
 
 export default {
   name: 'App',
   components: {
-    Game
+    Router
   }
 }
 </script>
