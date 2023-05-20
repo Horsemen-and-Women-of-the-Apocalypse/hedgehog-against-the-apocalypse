@@ -38,7 +38,8 @@ class BoardScene extends Phaser.Scene {
   create() {
     // Create entities
     this.city = new City(MAP_SIZE, this);
-    this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, 8, 0, this);
+    this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, 8, 0, this, 1, 100);
+    this.hedgehogChild = new Hedgehog(MAP_SIZE[0] / 2, 10, 0, this, 0.5, 100);
     this.cameraTarget = this.add.sprite(this.hedgehog.getPosition().x * TILE_SIZE_PX, 200, "");
 
     // Create map
@@ -96,7 +97,7 @@ class BoardScene extends Phaser.Scene {
 
     // Keyboard inputs
     this.input.on('pointermove', (pointer) => {
-      this.hedgehog.setTargetPosition(pointer)
+      this.hedgehog.setTargetPosition(pointer);
     });
 
     // Update entities

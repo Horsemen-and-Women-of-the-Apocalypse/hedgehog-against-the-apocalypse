@@ -4,7 +4,7 @@ import Phaser from "phaser";
 
 export default class Hedgehog {
 
-    SPEED = 0.08;
+    SPEED = 0;
 
     /**
      * 
@@ -13,7 +13,8 @@ export default class Hedgehog {
      * @param {*} direction 0 - North 1 - East 2 - South 3 - West
      * @param {*} scene
      */
-    constructor(defaultX, defaultY, direction, scene) {
+    constructor(defaultX, defaultY, direction, scene, scale, speed, target) {
+        this.SPEED = speed;
         this.scene = scene;
         this.isAlive = true;
         this.direction = direction;
@@ -21,8 +22,16 @@ export default class Hedgehog {
         this.position = new Position(defaultX, defaultY);
         // Add the physics sprite
         this.sprite = scene.physics.add.sprite(defaultX * TILE_SIZE_PX, defaultY * TILE_SIZE_PX, 'hedgehog');
-        this.targetSprite = scene.add.image(0, 0, 'target').setVisible(false);
-        this.targetSprite.setScale(0.8);
+        this.sprite.setSize(25, 25);
+        this.sprite.setScale(scale);
+        
+        if(target) {
+            this.targetSprite = target;
+        } else {
+            this.targetSprite = scene.add.image(0, 0, 'target').setVisible(false);
+            this.targetSprite.setScale(0.8);
+        }
+
         const hedgehogLayer = scene.add.layer();
         hedgehogLayer.setDepth(1);
 
@@ -81,7 +90,7 @@ export default class Hedgehog {
             this.sprite,
             this.target.x * TILE_SIZE_PX,
             this.target.y * TILE_SIZE_PX,
-            // Insert speed here
+            this.SPEED
         );
 
         // Update the position
