@@ -8,8 +8,9 @@ export default class City {
     /**
      * @param {*} scene
      */
-    constructor(scene) {
+    constructor(scene, hedgehog) {
         this.scene = scene;
+        this.hedgehog = hedgehog
         this.step = 0;
         this.sprites = [];
         this.moveSpriteIterator = 0;
@@ -64,7 +65,7 @@ export default class City {
         })
     }
 
-    placeBuilding(x, y) {
+    placeBuilding(x, y, currentStep = this.step) {
         const maxSprites = MAP_SIZE.width * MAP_SIZE.height / 2;
 
         if (this.grid[y][x] === 1) {
@@ -81,17 +82,27 @@ export default class City {
             const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani1')
             sprite.play('building_1');
             sprite.setScale(32 / 256);
-            sprite.setImmovable();
             sprite.setOrigin(0, 0);
             sprite.on('animationcomplete', () => {
                 this.spriteGroup.add(sprite);
+                sprite.setImmovable();
+                // Check if the hedgehog is in the new building
+                for (let child of this.hedgehog.children) {
+                    if (this.isHedgehogInBuilding(child, x, y, currentStep)) {
+                        child.kill();
+                    }
+                }
+
+                if (this.isHedgehogInBuilding(this.hedgehog, x, y, currentStep)) {
+                    this.hedgehog.kill();
+                }
             });
 
             this.sprites.push(sprite);
         }
     }
 
-    theCityIsGrowing(hedgehog) {
+    theCityIsGrowing() {
         // Add a new building to the city next to an existing building
         // 1. Find all the empty cells next to a building
 
@@ -104,18 +115,6 @@ export default class City {
                         const time_to_grow = Math.random() < BUILDING_GROWTH_PERCENTAGE;
                         if (time_to_grow) {
                             this.placeBuilding(buildingPos.x, buildingPos.y);
-
-                            // Check if the hedgehog is in the new building
-
-                            for (let child of hedgehog.children) {
-                                if (this.isHedgehogInBuilding(child, buildingPos.x, buildingPos.y)) {
-                                    child.kill();
-                                }
-                            }
-
-                            if (this.isHedgehogInBuilding(hedgehog, buildingPos.x, buildingPos.y)) {
-                                hedgehog.kill();
-                            }
                         }
                     })
                 }
@@ -133,15 +132,15 @@ export default class City {
         return adjacentBuildings;
     }
 
-    isHedgehogInBuilding(hedgehog, x, y) {
+    isHedgehogInBuilding(hedgehog, x, y, step) {
 
-        const yStep = y + this.step + 2;
+        const yStep = y + step + 2;
 
         const hedgehogX = hedgehog.position.x / TILE_SIZE_PX
         const hedgehogY = hedgehog.position.y / TILE_SIZE_PX;
 
-        return  hedgehogX >= x     && hedgehogX < x + 1 &&
-                hedgehogY >= yStep && hedgehogY < yStep + 1;
+        return hedgehogX >= x && hedgehogX < x + 1 &&
+            hedgehogY >= yStep && hedgehogY < yStep + 1;
     }
 
     destroy() {

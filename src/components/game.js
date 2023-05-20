@@ -58,16 +58,16 @@ class BoardScene extends Phaser.Scene {
     this.anims.create({
       key: 'building_1',
       frames: [
-        { key: 'building_1_ani1' },
-        { key: 'building_1_ani2', duration: 4000 },
+        { key: 'building_1_ani1', duration: 4000 },
+        { key: 'building_1_ani2' },
       ],
       frameRate: 2,
       repeat: 0
     });
 
     // Create entities
-    this.city = new City(this);
     this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 0, 0);
+    this.city = new City(this, this.hedgehog);
     this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
 
     this.chunks = [];
@@ -117,7 +117,7 @@ class BoardScene extends Phaser.Scene {
     this.hedgehog.setTargetPosition(position);
 
     // Update entities
-    this.city.theCityIsGrowing(this.hedgehog);
+    this.city.theCityIsGrowing();
     this.hedgehog.updatePosition();
 
     // Scroll map
