@@ -106,7 +106,6 @@ export default class Hedgehog {
                     this.SPEED = this.SPEED_MAX;
                 } else {
                     this.SPEED = this.SPEED + (distance > 0.4 ? 0.7 * distance : -0.7 * distance);
-                    console.log(distance);
                 } 
             }
         }
