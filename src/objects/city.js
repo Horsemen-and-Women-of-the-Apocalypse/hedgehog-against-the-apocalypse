@@ -16,6 +16,7 @@ export default class City {
         this.step = 0;
         this.sprites = [];
         this.moveSpriteIterator = 0;
+        this.spriteGroup = this.scene.physics.add.group();
     }
 
     resetGrid() {
@@ -84,9 +85,14 @@ export default class City {
             this.sprites[this.moveSpriteIterator].setPosition(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX);
             this.moveSpriteIterator = (this.moveSpriteIterator + 1) % maxSprites;
         } else {
-            const sprite = this.scene.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building');
-            sprite.setOrigin(0, 0);
-            this.layer.add(sprite);
+	    const spriteGround = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani0')
+	    spriteGround.setScale(32/100);
+	    const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani1').play('building_1');
+	    sprite.setScale(32/256);
+	    this.spriteGroup.add(sprite);
+	    sprite.setImmovable();
+	    sprite.setOrigin(0, 0);
+
             this.sprites.push(sprite);
         }
     }
@@ -132,5 +138,9 @@ export default class City {
             hedgehog.getPosition().x < x + 1 &&
             hedgehog.getPosition().y > y - 1 &&
             hedgehog.getPosition().y < y + 1;
+    }
+
+    destroy() {
+        this.layer.destroy();
     }
 }

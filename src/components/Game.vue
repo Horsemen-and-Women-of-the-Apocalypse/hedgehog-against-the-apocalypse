@@ -16,28 +16,12 @@ export default {
   },
   mounted() {
     // Init game
-    game.events.on("ready", () => this.setupListeners());
+    game.events.on("ready", () => {
+      console.log("Game is ready");
+    });
   },
   methods: {
-    setupListeners() {
-      // Setup listeners
-      game.events.on("gameover", () => this.gameover());
-      game.events.on("move", () => this.move());
-      game.events.on("win", () => this.win());
-    },
-    gameover() {
-      // Game over
-      console.log("Game over");
-    },
-    move() {
-      // Move
-      console.log("Move");
-    },
-    win() {
-      // Win
-      console.log("Win");
-    }
-  }, 
+  },
 }
 </script>
 
@@ -45,10 +29,8 @@ export default {
 #game {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* Custom cursor: */
+  cursor: url('./target.png'), auto;
 }
 
-#board {}
 </style>

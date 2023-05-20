@@ -8,19 +8,15 @@ import { TILE_SIZE_PX, MAP_SIZE, DIRECTIONS, SCROLL_SPEED } from "@/constants";
 const tilesets = {
   tiles: {
     name: "tiles",
-    path: "/assets/sprites/grass.png",
+    path: "/assets/sprites/nature/grass.jpg",
     nbImagesPerRow: 1,
-    imageSize: [32, 32]
+    imageSize: [100, 100]
   },
 };
 
 const TILESET = tilesets.tiles;
 
 class BoardScene extends Phaser.Scene {
-  map = null
-  layers = []
-  entities = []
-
   constructor() {
     super("BoardScene");
   }
@@ -30,18 +26,42 @@ class BoardScene extends Phaser.Scene {
       frameWidth: TILESET.imageSize[0],
       frameHeight: TILESET.imageSize[1]
     });
-    this.load.image('hedgehog', 'assets/sprites/hedgehog.png');
-    this.load.image('building', 'assets/sprites/building.png');
-    this.load.image('grass', 'assets/sprites/grass.png');
+    this.load.image('hedgehog_ani0', 'assets/sprites/animals/Hedgehog0000.png');
+    this.load.image('hedgehog_ani1', 'assets/sprites/animals/Hedgehog0001.png');
+
+    this.load.image('building_1_ani0', 'assets/sprites/city/Concrete_Tiles.jpg');
+    this.load.image('building_1_ani1', 'assets/sprites/city/Building_1_0000.png');
+    this.load.image('building_1_ani2', 'assets/sprites/city/Building_1_0001.png');
+    this.load.image('grass', 'assets/sprites/nature/grass.jpg');
 
     this.scrollDistance = 0;
   }
 
   create() {
+    this.anims.create({
+      key: 'hedgehog',
+      frames: [
+          { key: 'hedgehog_ani0' },
+          { key: 'hedgehog_ani1' },
+      ],
+      frameRate: 8,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'building_1',
+      frames: [
+          { key: 'building_1_ani1' },
+          { key: 'building_1_ani2', duration: 4000 },
+      ],
+      frameRate: 2,
+      repeat: 0
+    });
+
     // Create entities
-    this.city = new City(this);
-    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this);
-    this.cameraTarget = this.add.sprite(this.hedgehog.getPosition().x * TILE_SIZE_PX, 500, '');
+    this.city = new City(MAP_SIZE, this);
+    this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, 8, 0, this, 1, 100, 5);
+    this.cameraTarget = this.add.sprite(this.hedgehog.getPosition().x * TILE_SIZE_PX, 200, "");
 
     this.chunks = [];
     for (let y = 0; y < MAP_SIZE.height; y ++) {
@@ -56,16 +76,14 @@ class BoardScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.cameraTarget, true, 0.05, 0.05);
     this.cameras.main.setZoom(2);
     this.cameras.main.setBackgroundColor("#000000");
-    this.cameras.main.setBounds(
-      0,
-      0,
-      TILE_SIZE_PX * MAP_SIZE.width,
-        Number.POSITIVE_INFINITY
-    );
+    this.cameras.main.setBounds(0, 0, TILE_SIZE_PX * MAP_SIZE[0], Number.POSITIVE_INFINITY);
 
-    // Inputs
+    // Physics
+    this.physics.add.collider(this.hedgehog.sprite, this.city.spriteGroup);
+    this.hedgehog.children.forEach((child) => {
+      this.physics.add.collider(child.sprite, this.city.spriteGroup);
+    });
 
-    this.movementCursors = this.input.keyboard.createCursorKeys();
   }
 
   resetMap() {
@@ -83,42 +101,21 @@ class BoardScene extends Phaser.Scene {
   update() {
     this.scrollDistance += SCROLL_SPEED;
 
-    // Keyboard inputs
-    if (this.movementCursors) {
-      if (this.movementCursors.up.isDown) {
-        this.hedgehog.move(DIRECTIONS.North);
-      }
-      if (this.movementCursors.right.isDown) {
-        this.hedgehog.move(DIRECTIONS.East);
-      }
-      if (this.movementCursors.left.isDown) {
-        this.hedgehog.move(DIRECTIONS.West);
-      }
-      if (this.movementCursors.down.isDown) {
-        this.hedgehog.move(DIRECTIONS.South);
-      }
+    // Set target position
+    const position = {
+      x: this.input.activePointer.worldX,
+      y: this.input.activePointer.worldY
     }
+
+    this.hedgehog.setTargetPosition(position);
 
     // Update entities
     this.city.theCityIsGrowing(this.hedgehog);
+    this.hedgehog.updatePosition();
 
     // Check end game
-    if (!this.hedgehog.isAlive) {
-      // this.resetMap()
-    }
-
-    if(!(this.scrollDistance % TILE_SIZE_PX)) {
-      const step = this.scrollDistance / TILE_SIZE_PX,
-            rowToScroll = step % MAP_SIZE.height;
-
-      if (this.chunks[rowToScroll]) {
-        this.chunks[rowToScroll].move();
-      }
-
-      this.city.nextRow();
-    }
-
-    this.cameraTarget.setPosition(this.hedgehog.getPosition().x * TILE_SIZE_PX, this.scrollDistance + 500)
+    // if (!this.hedgehog.isAlive) {
+    // }
   }
 }
 
@@ -126,6 +123,13 @@ const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
+  physics: {
+    default: 'arcade'
+  },
+  fps: {
+    target: 60,
+    forceSetTimeOut: true
+  },
   scene: BoardScene
 };
 
@@ -144,7 +148,7 @@ window.addEventListener("resize", () => {
 window.onbeforeunload = function () {
   console.log("unloading window... try to unload cached images");
   game.cache.destroy();
-  game.destroy(false);
+  game.destroy(true);
 }
 
 export { game };
