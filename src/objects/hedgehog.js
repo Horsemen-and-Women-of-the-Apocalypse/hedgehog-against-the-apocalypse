@@ -32,8 +32,6 @@ export default class Hedgehog {
             this.children.push(new Hedgehog(MAP_SIZE[0] / 2, 10 + i, 0, this.scene, 0.5, 80));
         }
 
-        console.log(this.sprite);
-
         const hedgehogLayer = scene.add.layer();
         hedgehogLayer.setDepth(1);
         hedgehogLayer.add(this.sprite);
@@ -49,8 +47,12 @@ export default class Hedgehog {
             return
         }
 
-        for(let child of this.children) {
-            child.setTargetPosition(this.position);
+        for(let i = 0; i < this.children.length; i++) {
+            if(i == 0) {
+                this.children[i].setTargetPosition(this.position);
+            } else {
+                this.children[i].setTargetPosition(this.children[i - 1].position);
+            }
         }
 
         // Check if the cursor is not out of the map
@@ -82,8 +84,8 @@ export default class Hedgehog {
         const spriteX = this.sprite.x / TILE_SIZE_PX;
         const spriteY = this.sprite.y / TILE_SIZE_PX;
 
-        const distance = Phaser.Math.Distance.Between(spriteX, spriteY, this.target.x, this.target.y); // Tile distance
-        if (distance < 0.7) {
+        const distance = Phaser.Math.Distance.Between(spriteX, spriteY, this.target.x, this.target.y);
+        if (distance < 0.4) {
             // stop the sprite
             this.scene.physics.moveTo(this.sprite, spriteX, spriteY, 0);
             return;
