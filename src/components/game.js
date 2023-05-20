@@ -67,7 +67,7 @@ class BoardScene extends Phaser.Scene {
 
     // Create entities
     this.city = new City(this);
-    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 5);
+    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 0, 0);
     this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
 
     this.chunks = [];
@@ -152,7 +152,10 @@ const config = {
   width: window.innerWidth,
   height: window.innerHeight,
   physics: {
-    default: 'arcade'
+    default: 'arcade',
+    arcade: {
+      debug: true
+    }
   },
   pixelArt: true,
   fps: {

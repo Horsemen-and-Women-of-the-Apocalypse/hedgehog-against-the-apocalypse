@@ -37,7 +37,9 @@ export default class Hedgehog {
     }
 
     setTargetPosition(position) {
-        if (!this.isAlive) return;
+        if (!this.isAlive) {
+            return;
+        }
 
         for (let i = 0; i < this.children.length; i++) {
             if (i === 0) {
@@ -77,7 +79,6 @@ export default class Hedgehog {
 
     updatePosition(isChild) {
         // Get sprite position
-
         for (let child of this.children) {
             child.updatePosition(true);
         }
@@ -129,10 +130,11 @@ export default class Hedgehog {
 
     }
     kill() {
-        console.log("kill child number " + this.id);
         this.isAlive = false;
 
-        if (this.parent) {
+        console.log("Hedgehog is dead : " + this.id);
+
+        if(this.parent) {
             this.parent.died(this.id);
         }
         this.sprite.destroy();

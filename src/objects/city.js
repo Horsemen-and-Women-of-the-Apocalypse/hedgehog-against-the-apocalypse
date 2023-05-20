@@ -133,11 +133,15 @@ export default class City {
         return adjacentBuildings;
     }
 
-    isHedgehogInBuilding(hedgehog, x, y) { // Need to fix Position
-        return hedgehog.position.x / TILE_SIZE_PX > x - 1 &&
-            hedgehog.position.x / TILE_SIZE_PX < x + 1 &&
-            hedgehog.position.y / TILE_SIZE_PX > y - 1 &&
-            hedgehog.position.y / TILE_SIZE_PX < y + 1;
+    isHedgehogInBuilding(hedgehog, x, y) {
+
+        const yStep = y + this.step + 2;
+
+        const hedgehogX = hedgehog.position.x / TILE_SIZE_PX
+        const hedgehogY = hedgehog.position.y / TILE_SIZE_PX;
+
+        return  hedgehogX >= x     && hedgehogX < x + 1 &&
+                hedgehogY >= yStep && hedgehogY < yStep + 1;
     }
 
     destroy() {
