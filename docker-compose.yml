@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    networks:
+      - web
+    container_name: front
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.front.rule=Host(`front.remychagnas.fr`)"
+        - "traefik.http.routers.front.entrypoints=websecure"
+        - "traefik.http.middlewares.front.compress=true"
+        - "traefik.http.routers.front.middlewares=front"
+    restart: always
+networks:
+  web:
+    external: true

@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import Hedgehog from "../objects/hedgehog";
 import City from "../objects/city";
-import { TILE_SIZE_PX, MAP_SIZE, DIRECTIONS } from "../constants";
+import { TILE_SIZE_PX, MAP_SIZE, DIRECTIONS, SCROLL_SPEED } from "../constants";
 
 const tilesets = {
   tiles: {
@@ -30,30 +30,32 @@ class BoardScene extends Phaser.Scene {
     });
     this.load.image('hedgehog', 'assets/sprites/hedgehog.png');
     this.load.image('building', 'assets/sprites/building.png');
+
+    this.scrollDistance = 0;
   }
 
   create() {
-
     // Create entities
     this.city = new City(MAP_SIZE, this);
-    this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, MAP_SIZE[1] / 2, 0, this);
+    this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, 8, 0, this);
     this.physics.add.collider(this.hedgehog.sprite, this.city.testSprite, () => {
       console.log("Collision");
       this.hedgehog.kill();
     });
+    this.cameraTarget = this.add.sprite(this.hedgehog.getPosition().x * TILE_SIZE_PX, 200, "");
 
     // Create map
     this.resetMap();
 
     // Camera
-    this.cameras.main.startFollow(this.hedgehog.sprite);
+    this.cameras.main.startFollow(this.cameraTarget, true, 0.05, 0.05);
     this.cameras.main.setZoom(2);
     this.cameras.main.setBackgroundColor("#000000");
     this.cameras.main.setBounds(
       0,
       0,
       TILE_SIZE_PX * MAP_SIZE[0],
-      TILE_SIZE_PX * MAP_SIZE[1]
+        Number.POSITIVE_INFINITY
     );
 
     // Inputs
@@ -89,6 +91,8 @@ class BoardScene extends Phaser.Scene {
   }
 
   update() {
+    this.scrollDistance += SCROLL_SPEED;
+
     // Keyboard inputs
     if (this.movementCursors) {
       if (this.movementCursors.up.isDown) {

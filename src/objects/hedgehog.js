@@ -1,19 +1,25 @@
 import Position from "./position";
 import { TILE_SIZE_PX, MAP_SIZE } from "../constants";
+import Phaser from "phaser";
 
 export default class Hedgehog {
+
+    SPEED = 0.05;
 
     /**
      * 
      * @param {*} defaultX 
      * @param {*} defaultY 
      * @param {*} direction 0 - North 1 - East 2 - South 3 - West
+     * @param {*} scene
      */
     constructor(defaultX, defaultY, direction, scene) {
+        this.scene = scene;
         this.isAlive = true;
         this.direction = direction;
+        this.target = new Position(defaultX, defaultY);
         this.position = new Position(defaultX, defaultY);
-        this.sprite = scene.physics.add.sprite(this.position.x * TILE_SIZE_PX, this.position.y * TILE_SIZE_PX, 'hedgehog');
+        this.sprite = this.scene.add.sprite(direction.x, direction.y, 'hedgehog');
         this.sprite.setCircle(TILE_SIZE_PX / 2);
 
         const hedgehogLayer = scene.add.layer();
@@ -28,27 +34,32 @@ export default class Hedgehog {
     }
 
     move(position) {
+
         if (!this.isAlive) {
             console.log("Hedgehog is dead");
             return
         }
 
-
-        const deltax = position.x * 0.15
-        const deltay = position.y * 0.15
-        this.position.x += deltax;
-        this.position.y += deltay;
-
         // Check if the hedgehog is not out of the map
-        if (this.position.x - 0.5 < 0) this.position.x = 0.5;
-        if (this.position.y - 0.5 < 0) this.position.y = 0.5;
-        if (this.position.x + 0.5 > MAP_SIZE[0]) this.position.x = MAP_SIZE[0] - 0.5;
-        if (this.position.y + 0.5 > MAP_SIZE[1]) this.position.y = MAP_SIZE[1] - 0.5;
+        if (this.target.x - 0.5 < 0) this.target.x = 0.5;
+        if (this.target.y - 0.5 < 0) this.target.y = 0.5;
+        if (this.target.x + 0.5 > MAP_SIZE[0]) this.target.x = MAP_SIZE[0] - 0.5;
+        if (this.target.y + 0.5 > MAP_SIZE[1]) this.target.y = MAP_SIZE[1] - 0.5;
 
-        if (this.sprite != undefined) {
-            this.sprite.x = this.position.x * TILE_SIZE_PX;
-            this.sprite.y = this.position.y * TILE_SIZE_PX;
-        }
+        const deltax = position.x * this.SPEED;
+        const deltay = position.y * this.SPEED;
+
+        this.target.x += deltax;
+        this.target.y += deltay;
+
+        let angle = Phaser.Math.Angle.Between(this.target.x,this.target.y,this.position.x,this.position.y);
+        this.sprite.rotation = angle + 270 * (3.14 / 180);
+
+        this.position.x = this.target.x * 0.1 + this.position.x * 0.9;
+        this.position.y = this.target.y * 0.1 + this.position.y * 0.9;
+
+        this.sprite.x = this.position.x * TILE_SIZE_PX;
+        this.sprite.y = this.position.y * TILE_SIZE_PX;
     }
 
     kill() {
