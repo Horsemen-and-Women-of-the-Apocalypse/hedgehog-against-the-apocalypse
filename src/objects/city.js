@@ -1,8 +1,8 @@
 import { TILE_SIZE_PX } from "../constants";
 
 const SIZE_OF_SQUARE_FREE_OF_BUILDINGS = 5;
-const INITIAL_BUILDING_PERCENTAGE = 0.01;
-const BUILDING_GROWTH_PERCENTAGE = 0.005;
+const INITIAL_BUILDING_PERCENTAGE = 0.21;
+const BUILDING_GROWTH_PERCENTAGE = 0.00;
 
 export default class City {
 
@@ -14,6 +14,9 @@ export default class City {
         this.mapSize = mapSize;
         this.layer = this.scene.add.layer();
         this.layer.setDepth(1);
+        this.testSprite = this.scene.add.sprite(0, 0, 'building');
+        this.testSprite.setOrigin(0, 0);
+        this.layer.add(this.testSprite);
     }
 
     resetGrid() {
@@ -44,6 +47,8 @@ export default class City {
     placeBuilding(x, y) {
         const sprite = this.scene.add.sprite(x * TILE_SIZE_PX, y * TILE_SIZE_PX, 'building');
         sprite.setOrigin(0, 0);
+        this.scene.physics.world.enable(sprite);
+        sprite.body.setImmovable(true);
         this.grid[x][y] = sprite;
         this.layer.add(sprite);
         this.nbBuildings += 1;
@@ -90,5 +95,9 @@ export default class City {
             hedgehog.getPosition().x < x + 1 &&
             hedgehog.getPosition().y > y - 1 &&
             hedgehog.getPosition().y < y + 1;
+    }
+
+    destroy() {
+        this.layer.destroy();
     }
 }

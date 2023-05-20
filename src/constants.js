@@ -1,7 +1,7 @@
 import Position from "@/objects/position";
 
 const TILE_SIZE_PX = 32
-const MAP_SIZE = [50, 50];
+const MAP_SIZE = [10, 10];
 
 const DIRECTIONS = {
     North: new Position(0, -1),

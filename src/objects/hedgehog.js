@@ -14,6 +14,7 @@ export default class Hedgehog {
         this.direction = direction;
         this.position = new Position(defaultX, defaultY);
         this.sprite = scene.physics.add.sprite(this.position.x * TILE_SIZE_PX, this.position.y * TILE_SIZE_PX, 'hedgehog');
+        this.sprite.setCircle(TILE_SIZE_PX / 2);
 
         const hedgehogLayer = scene.add.layer();
         hedgehogLayer.setDepth(1);

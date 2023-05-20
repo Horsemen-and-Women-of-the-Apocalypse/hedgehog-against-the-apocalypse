@@ -37,6 +37,10 @@ class BoardScene extends Phaser.Scene {
     // Create entities
     this.city = new City(MAP_SIZE, this);
     this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, MAP_SIZE[1] / 2, 0, this);
+    this.physics.add.collider(this.hedgehog.sprite, this.city.testSprite, () => {
+      console.log("Collision");
+      this.hedgehog.kill();
+    });
 
     // Create map
     this.resetMap();
