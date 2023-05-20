@@ -28,16 +28,15 @@ class BoardScene extends Phaser.Scene {
       frameWidth: TILESET.imageSize[0],
       frameHeight: TILESET.imageSize[1]
     });
-    this.load.image('hedgehog', 'assets/sprites/hedgehog.png');
+    this.load.image('hedgehog_ani0', 'assets/sprites/animals/Hedgehog0000.png');
+    this.load.image('hedgehog_ani1', 'assets/sprites/animals/Hedgehog0001.png');
     this.load.image('building', 'assets/sprites/building.png');
 
     this.scrollDistance = 0;
   }
 
   create() {
-    // Change cursor
-    this.input.setDefaultCursor('url(assets/sprites/target.png), pointer');
-
+    
     // Create entities
     this.city = new City(MAP_SIZE, this);
     this.hedgehog = new Hedgehog(MAP_SIZE[0] / 2, 8, 0, this, 1, 100, 5);
@@ -118,8 +117,7 @@ const config = {
   width: window.innerWidth,
   height: window.innerHeight,
   physics: {
-    default: 'arcade',
-    arcade: { debug: true }
+    default: 'arcade'
   },
   scene: BoardScene
 };
