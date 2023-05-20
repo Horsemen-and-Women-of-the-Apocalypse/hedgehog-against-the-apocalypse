@@ -35,14 +35,13 @@ class BoardScene extends Phaser.Scene {
   }
 
   create() {
-    
     this.anims.create({
       key: 'hedgehog',
       frames: [
           { key: 'hedgehog_ani0' },
           { key: 'hedgehog_ani1' },
       ],
-      frameRate: 2,
+      frameRate: 8,
       repeat: -1
     });
 
