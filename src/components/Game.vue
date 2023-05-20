@@ -1,5 +1,8 @@
 <template>
   <div id="game">
+    <div id="controls">
+      <a href="home"><button id="about">Home</button></a>
+    </div>
     <div id="board"></div>
   </div>
 </template>
@@ -49,6 +52,27 @@ export default {
 }
 
 #board {
-  cursor: url('target.png') 200 200, auto;
+  cursor: url('./target.png') 200 200, auto;
+}
+
+#controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  z-index: 100;
+}
+
+button {
+    width: 100px;
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.1s;
+    border: 3px solid black;
+    font-weight: bold;
 }
 </style>
