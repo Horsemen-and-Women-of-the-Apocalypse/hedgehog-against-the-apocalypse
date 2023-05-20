@@ -66,8 +66,8 @@ export default class Hedgehog {
         const spriteX = this.sprite.x / TILE_SIZE_PX;
         const spriteY = this.sprite.y / TILE_SIZE_PX;
 
-        const distance = Phaser.Math.Distance.BetweenPoints(this.sprite, this.target);
-        if (distance < TILE_SIZE_PX / 5) {
+        const distance = Phaser.Math.Distance.Between(spriteX, spriteY, this.target.x, this.target.y); // Tile distance
+        if (distance < 0.7) {
             // stop the sprite
             this.scene.physics.moveTo(this.sprite, spriteX, spriteY, 0);
             return;

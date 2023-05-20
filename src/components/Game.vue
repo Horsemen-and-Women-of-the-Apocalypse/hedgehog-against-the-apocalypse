@@ -48,7 +48,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Custom cursor: */
+  cursor: url('target.png') 200 200, auto;
 }
 
 #board {}
+
 </style>
