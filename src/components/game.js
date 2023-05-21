@@ -36,12 +36,11 @@ class BoardScene extends Phaser.Scene {
     this.load.image('hedgehog_ani0', 'assets/sprites/animals/Hedgehog0000.png');
     this.load.image('hedgehog_ani1', 'assets/sprites/animals/Hedgehog0001.png');
 
-    this.load.image('building_1_ani0', 'assets/sprites/city/Concrete_Tiles_256.jpg');
-    this.load.image('building_1_ani1', 'assets/sprites/city/Building_1_0000_concrete.png');
-    this.load.image('building_1_ani2', 'assets/sprites/city/Building_1_0001.png');
-
-    this.load.image('building_2_ani1', 'assets/sprites/city/Building_2_0000.png');
-    this.load.image('building_2_ani2', 'assets/sprites/city/Building_2_0001.png');
+    this.load.image('building_ani0', 'assets/sprites/city/Building01.png');
+    this.load.image('city0', 'assets/sprites/city/city0.png');
+    this.load.image('city1', 'assets/sprites/city/city1.png');
+    this.load.image('city2', 'assets/sprites/city/city2.png');
+    this.load.image('city3', 'assets/sprites/city/city3.png');
 
     this.load.image('grass', 'assets/sprites/nature/grass.jpg');
     this.load.image('flower', 'assets/sprites/nature/Flowers_Tiles.jpg');
@@ -70,10 +69,20 @@ class BoardScene extends Phaser.Scene {
     });
 
     this.anims.create({
+      key: 'building_0',
+      frames: [
+        { key: 'building_ani0', duration: 2000 },
+        { key: 'city0' },
+      ],
+      frameRate: 10,
+      repeat: 0
+    });
+
+    this.anims.create({
       key: 'building_1',
       frames: [
-        { key: 'building_1_ani1', duration: 2000 },
-        { key: 'building_1_ani2' },
+        { key: 'building_ani0', duration: 2000 },
+        { key: 'city1' },
       ],
       frameRate: 10,
       repeat: 0
@@ -82,8 +91,18 @@ class BoardScene extends Phaser.Scene {
     this.anims.create({
       key: 'building_2',
       frames: [
-        { key: 'building_2_ani1', duration: 2000 },
-        { key: 'building_2_ani2' },
+        { key: 'building_ani0', duration: 2000 },
+        { key: 'city2' },
+      ],
+      frameRate: 10,
+      repeat: 0
+    });
+
+    this.anims.create({
+      key: 'building_3',
+      frames: [
+        { key: 'building_ani0', duration: 2000 },
+        { key: 'city3' },
       ],
       frameRate: 10,
       repeat: 0
@@ -192,7 +211,7 @@ const config = {
   width: window.innerWidth,
   height: window.innerHeight,
   physics: {
-    default: 'arcade',
+    default: 'arcade'
   },
   pixelArt: true,
   fps: {
