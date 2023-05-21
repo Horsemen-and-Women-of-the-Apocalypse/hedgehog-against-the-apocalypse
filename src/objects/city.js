@@ -3,6 +3,8 @@ import Hedgehog from './hedgehog';
 
 // const INITIAL_BUILDING_PERCENTAGE = 0.00;
 const BUILDING_GROWTH_PERCENTAGE = 0.001;
+const BUILDING_GROWTH_PERCENTAGE_INCREASE = 0.00001; // Per step
+const BUILDING_GROWTH_PERCENTAGE_MAX = 0.0025; // Per step
 
 export default class City {
 
@@ -14,6 +16,7 @@ export default class City {
         this.moveSpriteIterator = 0;
         this.spriteGroup = this.scene.physics.add.group();
         this.maxSprites = MAP_SIZE.width * MAP_SIZE.height;
+        this.buildingGrowthPercentage = BUILDING_GROWTH_PERCENTAGE;
     }
 
     resetGrid() {
@@ -60,19 +63,19 @@ export default class City {
         const positions = this.generateUniqueIntegers(MAP_SIZE.width, 2);
 
         // Spawn hedgehog
-        const random = Math.floor(Math.random() * MAP_SIZE.width);    
+        const random = Math.floor(Math.random() * MAP_SIZE.width);
 
-        if(!positions.includes(random)) {
+        if (!positions.includes(random)) {
             const spawn = Math.floor(Math.random() * 101);
 
-            if(spawn < 10) {
+            if (spawn < 10) {
                 const lostChild = new Hedgehog(random + 0.5, y + 0.5 + this.step, 0, this.scene, 0.5, 0, 0, this.hedgehog.lostChildren.length + 1);
                 lostChild.position.x = lostChild.sprite.x;
                 lostChild.position.y = lostChild.sprite.y;
 
                 this.scene.physics.add.collider(lostChild.sprite, this.spriteGroup);
 
-                this.hedgehog.lostChildren.push(lostChild);       
+                this.hedgehog.lostChildren.push(lostChild);
             }
         }
 
@@ -87,6 +90,12 @@ export default class City {
         }
         for (let x = 0; x < MAP_SIZE.width; x++) {
             if (Math.random() < 0.2) this.placeBuilding(x, 8);
+        }
+
+        // Increase building growth percentage
+        if (this.buildingGrowthPercentage < BUILDING_GROWTH_PERCENTAGE_MAX) {
+            this.buildingGrowthPercentage += BUILDING_GROWTH_PERCENTAGE_INCREASE;
+            console.log("difficulty: " + this.buildingGrowthPercentage);
         }
     }
 
@@ -186,9 +195,9 @@ export default class City {
                 if (this.grid[y][x] !== 0) {
                     const adjacentBuildings = this.getAdjacentBuildings(x, y);
                     adjacentBuildings.forEach((buildingPos) => {
-                        
+
                         const random = Math.random();
-                        const time_to_grow = random < BUILDING_GROWTH_PERCENTAGE;
+                        const time_to_grow = random < this.buildingGrowthPercentage;
 
                         if (time_to_grow) {
                             this.placeBuilding(buildingPos.x, buildingPos.y);
