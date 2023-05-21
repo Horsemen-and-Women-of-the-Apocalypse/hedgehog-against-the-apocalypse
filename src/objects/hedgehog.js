@@ -157,6 +157,10 @@ export default class Hedgehog {
             this.parent.died(this.id);
         }
         this.sprite.destroy();
+
+        // Play death sound
+        const random = Math.floor(Math.random() * this.scene.deathSounds.length);
+        this.scene.deathSounds[random].play();
     }
 
     died(id) {
