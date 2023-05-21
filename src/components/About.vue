@@ -1,7 +1,6 @@
 <template>
   <div id="about">
     <h2>
-
       Abouts
       <button>Back to Home</button>
     </h2>
