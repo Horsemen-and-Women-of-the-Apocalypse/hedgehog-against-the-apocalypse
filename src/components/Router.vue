@@ -28,7 +28,6 @@ export default {
     },
     mounted() {
         window.addEventListener('hashchange', () => {
-            console.log(window.location.hash);
             this.currentPath = window.location.hash;
         })
     }

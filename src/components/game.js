@@ -16,9 +16,11 @@ const tilesets = {
 
 const TILESET = tilesets.tiles;
 
-const score = {
+const data = {
   year: 2023,
   score: 0,
+  gameOver: false,
+  childRemaining: 5,
 }
 
 class BoardScene extends Phaser.Scene {
@@ -43,6 +45,12 @@ class BoardScene extends Phaser.Scene {
   }
 
   create() {
+    // Reset data
+    data.year = 2023;
+    data.score = 0;
+    data.gameOver = false;
+    data.childRemaining = 5;
+
     this.input.setDefaultCursor("url('assets/sprites/target.png')16 16, pointer");
 
     this.anims.create({
@@ -66,7 +74,7 @@ class BoardScene extends Phaser.Scene {
     });
 
     // Create entities
-    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, 5, 0);
+    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, data.childRemaining, 0);
     this.city = new City(this, this.hedgehog);
     this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
 
@@ -123,7 +131,7 @@ class BoardScene extends Phaser.Scene {
     // Scroll map
     if (!(this.scrollDistance % TILE_SIZE_PX)) {
       const step = this.scrollDistance / TILE_SIZE_PX,
-      rowToScroll = step % MAP_SIZE.height;
+        rowToScroll = step % MAP_SIZE.height;
 
       if (this.chunks[rowToScroll]) {
         this.chunks[rowToScroll].move();
@@ -135,15 +143,31 @@ class BoardScene extends Phaser.Scene {
     // Scroll camera
     this.cameraTarget.setPosition(this.hedgehog.position.x, this.scrollDistance + 500)
 
-    // Update scores
-    this.calculateScore();
+    // Kill hedgehog if out of map
+    const animals = [this.hedgehog, ...this.hedgehog.children]
+    animals.forEach((hedgehog) => {
+      if (this.scrollDistance > hedgehog.position.y && hedgehog.isAlive) hedgehog.kill();
+    });
+
+
+    // Update data (scores, gameOver)
+    if (!data.gameOver) this.updateData();
   }
 
-  calculateScore() {
+  updateData() {
     const stepScore = this.scrollDistance / TILE_SIZE_PX
     const year = Math.floor(stepScore / 3) + 2023;
-    score.year = year
-    score.score = stepScore * 10
+    data.year = year
+    data.score = stepScore * 10
+
+    // Check if game is over
+    // Game over conditions:
+    // - Hedgehog is dead
+    // - No more childrens (´･_･`) 
+    if (!this.hedgehog.isAlive) data.gameOver = true
+    const aliveHedgehogChildren = this.hedgehog.children.filter((child) => child.isAlive)
+    if (!aliveHedgehogChildren.length) data.gameOver = true
+    data.childRemaining = aliveHedgehogChildren.length
   }
 }
 
@@ -165,4 +189,4 @@ const config = {
 
 
 
-export { config, score };
+export { config, data };

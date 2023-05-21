@@ -1,18 +1,54 @@
 <template>
   <div id="game">
+    <!-- Controls, score ... -->
     <div id="controls">
       <a href="#/home"><button id="about">Home</button></a>
+
+      <div id="childs">
+        <TransitionGroup
+          name="list"
+          tag="ul"
+        >
+          <img
+            class="child"
+            v-for="(child, i) in childRemaining"
+            :key="i"
+            src="hhIcon.png"
+          />
+        </TransitionGroup>
+      </div>
       <div id="scoreYear">
-        {{ scoreDisplay.year }}
+        {{ scoreYear }}
       </div>
     </div>
+    <!-- Game over pannel -->
+    <Transition>
+      <div
+        id="gameOverPannel"
+        v-if="gameOver"
+      >
+        <h3>
+          Game over
+        </h3>
+        <p>
+          You went extinct in {{ scoreYear }}.
+        </p>
+        <p v-if="childRemaining === 0">
+          No children left.
+        </p>
+        <button
+          id="play"
+          @click="resartGame"
+        >Play again</button>
+      </div>
+    </Transition>
     <div id="board"></div>
   </div>
 </template>
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { config, score } from "./game";
+import { config, data } from "./game";
 import Phaser from "phaser";
 
 export default {
@@ -21,7 +57,9 @@ export default {
   data() {
     return {
       game: null,
-      scoreDisplay: {}
+      gameOver: false,
+      childRemaining: data.childRemaining,
+      scoreYear: data.year,
     }
   },
   mounted() {
@@ -38,11 +76,18 @@ export default {
     });
 
     setInterval(() => {
-      this.scoreDisplay = score;
-      this.$forceUpdate();
+      this.scoreYear = data.year;
+      this.childRemaining = data.childRemaining;
+      this.gameOver = data.gameOver;
     }, 1000);
   },
   methods: {
+    resartGame() {
+      this.game.destroy(true);
+      this.game = new Phaser.Game(config);
+      this.gameOver = false;
+      data.gameOver = false;
+    }
   },
   beforeUnmount() {
     console.log("unmounting game");
@@ -52,14 +97,13 @@ export default {
 </script>
 
 <style scoped>
-
 #controls {
   position: absolute;
   top: 0;
   left: 0;
   padding: 10px;
   z-index: 100;
-  width: 100%;
+  width: 99%;
   display: flex;
   justify-content: space-between;
 }
@@ -73,7 +117,7 @@ button {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.1s;
-  border: 3px solid black;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.504));
   font-weight: bold;
 }
 
@@ -83,13 +127,61 @@ button {
   margin: 10px;
   padding: 10px;
   border-radius: 10px;
-  border: 3px solid black;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.504));
   background-color: white;
   color: black;
-  text-align: center;
   cursor: pointer;
-  transition: all 0.1s;
-  border: 3px solid black;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+#gameOverPannel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.418);
+  background: rgb(52, 52, 52);
+  border-radius: 10px;
+  width: 500px;
+  height: 300px;
+  padding: 40px;
+  cursor: pointer;
+  color: white;
+  font-size: 1.5em;
+}
+
+#childs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.child {
+  height: 50px;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.504))
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+  height: 0;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

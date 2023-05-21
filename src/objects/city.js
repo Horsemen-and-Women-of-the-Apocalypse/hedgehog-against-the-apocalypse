@@ -15,6 +15,8 @@ export default class City {
         this.sprites = [];
         this.moveSpriteIterator = 0;
         this.spriteGroup = this.scene.physics.add.group();
+        this.maxSprites = MAP_SIZE.width * MAP_SIZE.height;
+        
     }
 
     resetGrid() {
@@ -59,30 +61,35 @@ export default class City {
         this.grid.shift();
         this.grid.push(newLayer);
 
+        // Add new buildings on new row
         const positions = this.generateUniqueIntegers(MAP_SIZE.width, 2);
         positions.forEach(x => {
             this.placeBuilding(x, y);
         })
+
+        // Fill the top rows with buildings
+        for (let x = 0; x < MAP_SIZE.width; x++) {
+            if (Math.random() < 0.4) this.placeBuilding(x, 7);
+        }
+        for (let x = 0; x < MAP_SIZE.width; x++) {
+            if (Math.random() < 0.2) this.placeBuilding(x, 8);
+        }
     }
 
     placeBuilding(x, y) {
-        const maxSprites = MAP_SIZE.width * MAP_SIZE.height / 2;
-
-        if (this.grid[y][x] === 1) {
-            return;
-        }
+        if (this.grid[y][x] === 1) return;
 
         this.grid[y][x] = 1;
         const stepSaved = this.step;
 
-        if (this.sprites.length > maxSprites) {
+        if (this.sprites.length > this.maxSprites) {
             // Move the sprite
             // Remove from the group first to prevent collisions
             const spriteToMove = this.sprites[this.moveSpriteIterator];
             this.spriteGroup.remove(spriteToMove);
             spriteToMove.setPosition(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX);
             spriteToMove.play('building_1');
-            this.moveSpriteIterator = (this.moveSpriteIterator + 1) % maxSprites;
+            this.moveSpriteIterator = (this.moveSpriteIterator + 1) % this.maxSprites;
 
             // Delete event listener
             spriteToMove.removeAllListeners('animationcomplete');
