@@ -13,8 +13,14 @@ export default class Chunk {
     }
   }
 
-  move() {
+  move(step) {
     this.sprites.forEach(sprite => {
+
+      const random = Math.floor(Math.random() * 100);    
+
+      if(random < 0.2 + step/10) {
+        sprite.setTexture('concrete');
+      }
       sprite.setY(sprite.y + MAP_SIZE.height * TILE_SIZE_PX)
     });
   }

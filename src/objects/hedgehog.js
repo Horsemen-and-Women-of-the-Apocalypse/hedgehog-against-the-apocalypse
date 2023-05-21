@@ -12,13 +12,12 @@ export default class Hedgehog {
     children = []
     lostChildren = [];
 
-    constructor(defaultX, defaultY, direction, scene, scale, speed, childNumber, id, parent) {
+    constructor(defaultX, defaultY, scene, scale, speed, childNumber, id, parent) {
         this.parent = parent;
         this.id = id;
         this.SPEED = speed;
         this.scene = scene;
         this.isAlive = true;
-        this.direction = direction;
         this.target = new Position(defaultX, defaultY);
         this.position = new Position(defaultX, defaultY);
 
@@ -32,7 +31,7 @@ export default class Hedgehog {
         this.sprite.setCircle(25);
 
         for (let i = 0; i < childNumber; i++) {
-            this.children.push(new Hedgehog(defaultX, defaultY + i / 3, 0, this.scene, 0.5, 80, 0, i + 1, this));
+            this.children.push(new Hedgehog(defaultX, defaultY + i / 3, this.scene, 0.5, 80, 0, i + 1, this));
         }
 
         // Sounds
