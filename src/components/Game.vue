@@ -10,14 +10,14 @@
           tag="ul"
         >
           <img
-            class="child"
+            class="child displayPannel"
             v-for="(child, i) in childRemaining"
             :key="i"
             src="hhIcon.png"
           />
         </TransitionGroup>
       </div>
-      <div id="scoreYear">
+      <div id="scoreYear" class="displayPannel">
         {{ scoreYear }}
       </div>
     </div>
@@ -150,14 +150,8 @@ export default {
 button {
   width: 100px;
   height: 50px;
-  border-radius: 10px;
-  border: none;
   margin: 10px;
   font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.1s;
-  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.504));
-  font-weight: bold;
 }
 
 #scoreYear {
@@ -165,11 +159,6 @@ button {
   font-weight: bold;
   margin: 10px;
   padding: 10px;
-  border-radius: 10px;
-  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.504));
-  background-color: white;
-  color: black;
-  cursor: pointer;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -184,7 +173,7 @@ button {
   background: rgb(52, 52, 52);
   border-radius: 10px;
   width: 500px;
-  height: 300px;
+  height: 200px;
   padding: 40px;
   cursor: pointer;
   color: white;
@@ -194,12 +183,11 @@ button {
 #childs {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
 }
 
 .child {
   height: 50px;
-  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.504))
+  margin-right: 10px;
 }
 
 .list-enter-active,
@@ -238,11 +226,6 @@ button {
   padding: 10px;
   width: 70px;
   border-radius: 10px;
-  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.504));
-  background-color: white;
-  color: black;
-  cursor: pointer;
-  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;

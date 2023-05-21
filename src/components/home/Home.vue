@@ -8,7 +8,10 @@
             <About />
         </div>
         <div id="pannel">
-            <h1>Hedgehog against the apocalypse</h1>
+            <img
+                id="title"
+                src="./titleText.png"
+            >
             <a href="#/game"><button id="play">Play</button></a>
             <button
                 id="about"
@@ -40,11 +43,11 @@ export default {
 #home {
     width: 100vw;
     height: 100vh;
-    background: black;
-    background-image: url("building.png");
-    background-size: 50px;
+    background-image: url(./title.jpg);
+    background-size: cover;
+    background-position: center;
+
     display: flex;
-    align-items: center;
 }
 
 #pannel {
@@ -52,33 +55,19 @@ export default {
     align-items: center;
     flex-direction: column;
     /* Custom cursor: */
-    background: green;
     height: 500px;
     width: 100%;
     padding: 20px;
-    box-shadow: 0 0 100px rgba(0, 0, 0, 0.418);
 }
-
-h1 {
-    color: white;
-    font-size: 5rem;
-    text-align: center;
+#title{
+    height: 250px;
+    padding-bottom: 50px;
 }
 
 button {
     width: 200px;
     height: 50px;
-    border-radius: 10px;
-    border: none;
     margin: 10px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.1s;
-}
-
-button:hover {
-    background: darkgreen;
-    color: white;
 }
 
 #play {
