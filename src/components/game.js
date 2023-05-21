@@ -111,7 +111,7 @@ class BoardScene extends Phaser.Scene {
     // Create entities
     this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, this, 1, 100, data.childRemaining, 0);
     this.city = new City(this, this.hedgehog);
-    this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
+    this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 450, "");
 
     this.chunks = [];
     for (let y = 0; y < MAP_SIZE.height; y++) {
@@ -192,7 +192,7 @@ class BoardScene extends Phaser.Scene {
     }
 
     // Scroll camera
-    this.cameraTarget.setPosition(this.hedgehog.position.x, this.scrollDistance + 500);
+    this.cameraTarget.setPosition(this.hedgehog.position.x, this.scrollDistance + 450);
 
     // Kill hedgehog if out of map
     const animals = [this.hedgehog, ...this.hedgehog.children]
