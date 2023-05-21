@@ -9,14 +9,14 @@
 
       <h3>Designer</h3>
 
-      <p>cyborgnekosica - <a href="https://www.artfol.co/CyborgNekoSica">Portfolio</a></p> 
+      <p>cyborgnekosica - <a href="https://www.artfol.co/CyborgNekoSica">Portfolio</a></p>
     </div>
     <div id="developer">
 
       <h3>Developer</h3>
 
       <p>Tomansion - <a href="https://github.com/Tomansion">Github</a></p>
-      <p>Nonologisme - <a href="https://gitlab.com/nonologism">Gitlab</a></p>
+      <p>Nonologism - <a href="https://gitlab.com/nonologism">Gitlab</a></p>
       <p>Fantorem - <a href="https://github.com/Fantorem">Github</a></p>
     </div>
     <div id="sound">
@@ -29,9 +29,15 @@
 
       <h3>Music</h3>
 
-      <p>Nonologisme</p>
+      <p>Nonologism</p>
     </div>
-    <div id="phaser"><p><small>Made with Phaser : <a href="https://phaser.io/">Phaser</a></small></p></div>
+    <div id="phaser">
+      <p><small>Made with <a href="https://phaser.io/">Phaser</a>.</small></p>
+    </div>
+    <div>
+      <p><small>Made for the <a href="https://itch.io/jam/climate-jam-2023">Climate-jam 2023</a> in 24h!</small> </p>
+    </div>
+
   </div>
 </template>
 
@@ -73,9 +79,7 @@ button {
   transition: all 0.1s;
 }
 
-#phaser{
+#phaser {
   padding-top: 10%;
   align-self: flex-end;
-}
-
-</style>
+}</style>

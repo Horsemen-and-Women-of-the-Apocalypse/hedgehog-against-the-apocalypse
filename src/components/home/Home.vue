@@ -47,6 +47,7 @@
                 id="about"
                 @click="displayAbout = true"
             >About</button>
+            <button @click="displayIntro = true">Introduction</button>
         </div>
     </div>
 </template>
@@ -115,6 +116,7 @@ button {
     width: 200px;
     height: 50px;
     margin: 10px;
+    min-height: 50px;
 }
 
 #play {
