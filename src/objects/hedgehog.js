@@ -10,6 +10,7 @@ export default class Hedgehog {
 
     id = 0;
     children = []
+    lostChildren = [];
 
     constructor(defaultX, defaultY, direction, scene, scale, speed, childNumber, id, parent) {
         this.parent = parent;
@@ -33,7 +34,6 @@ export default class Hedgehog {
         for (let i = 0; i < childNumber; i++) {
             this.children.push(new Hedgehog(defaultX, defaultY + i / 3, 0, this.scene, 0.5, 80, 0, i + 1, this));
         }
-
     }
 
     setTargetPosition(position) {
@@ -54,9 +54,25 @@ export default class Hedgehog {
                 } else {
                     this.children[i].setTargetPosition(this.children[i - 1].position);
                 }
-
-
             }
+        }
+
+        for (let i = 0; i < this.lostChildren.length; i++) {
+            const distanceToMother = Phaser.Math.Distance.Between(this.position.x, this.position.y, this.lostChildren[i].position.x, this.lostChildren[i].position.y);
+            if (distanceToMother < 20) {
+
+                const lostChild = this.lostChildren[i];
+
+                lostChild.parent = this;
+                lostChild.SPEED = 80;
+                lostChild.setTargetPosition(this.position);
+                lostChild.id = this.children.length + 1;
+                lostChild.target == undefined;
+
+                this.lostChildren.splice(i, 1);
+                this.children.push(lostChild);     
+            }
+
         }
 
         // Check if the cursor is not out of the map
@@ -77,10 +93,25 @@ export default class Hedgehog {
         this.sprite.rotation = angle + 270 * (3.14 / 180);
     }
 
-    updatePosition(isChild) {
+    updatePosition(isChild, isLost) {
         // Get sprite position
         for (let child of this.children) {
-            child.updatePosition(true);
+            child.updatePosition(true, false);
+        }
+
+        for (let lostchild of this.lostChildren) {
+            lostchild.updatePosition(false, true);
+        }
+
+        if(isLost && this.target) {
+            this.SPEED = 20;
+
+            const position = {
+                x: this.position.x,
+                y: this.position.y + 100
+            }
+
+            this.setTargetPosition(position);
         }
 
         if (!this.isAlive) return;
@@ -129,19 +160,28 @@ export default class Hedgehog {
         this.position.y = newSpriteY;
 
     }
-    kill() {
+    kill(lost) {
         this.isAlive = false;
-
-        console.log("Hedgehog is dead : " + this.id);
-
-        if (this.parent) {
-            this.parent.died(this.id);
+        if(lost) {
+            if (this.parent) {
+                this.parent.died(this.id, lost);
+            }
+        } else {
+            if (this.parent) {
+                this.parent.died(this.id);
+            }
         }
+        
         this.sprite.destroy();
     }
 
-    died(id) {
-        const index = this.children.findIndex(child => child.id == id);
-        this.children.splice(index, 1);
+    died(id, lost) {
+        if(lost) {
+            const index = this.lostChildren.findIndex(child => child.id == id);
+            this.lostChildren.splice(index, 1);
+        } else {
+            const index = this.children.findIndex(child => child.id == id);
+            this.children.splice(index, 1);
+        } 
     }
 }

@@ -37,7 +37,7 @@ class BoardScene extends Phaser.Scene {
     this.load.image('hedgehog_ani1', 'assets/sprites/animals/Hedgehog0001.png');
 
     this.load.image('building_1_ani0', 'assets/sprites/city/Concrete_Tiles_256.jpg');
-    this.load.image('building_1_ani1', 'assets/sprites/city/Building_1_0000_concrete.png');
+    this.load.image('building_1_ani1', 'assets/sprites/city/Building_1_0000.png');
     this.load.image('building_1_ani2', 'assets/sprites/city/Building_1_0001.png');
 
     this.load.image('building_2_ani1', 'assets/sprites/city/Building_2_0000.png');
@@ -114,7 +114,6 @@ class BoardScene extends Phaser.Scene {
     this.hedgehog.children.forEach((child) => {
       this.physics.add.collider(child.sprite, this.city.spriteGroup);
     });
-
   }
 
   resetMap() {
@@ -142,7 +141,7 @@ class BoardScene extends Phaser.Scene {
 
     // Update entities
     this.city.theCityIsGrowing();
-    this.hedgehog.updatePosition();
+    this.hedgehog.updatePosition(false);
 
     // Scroll map
     if (!(this.scrollDistance % TILE_SIZE_PX)) {
@@ -193,6 +192,9 @@ const config = {
   height: window.innerHeight,
   physics: {
     default: 'arcade',
+    arcade :{
+      debug: true
+    }
   },
   pixelArt: true,
   fps: {

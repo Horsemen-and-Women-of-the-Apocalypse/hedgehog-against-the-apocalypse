@@ -1,4 +1,5 @@
 import { CITY_HEADSTART, MAP_SIZE, TILE_SIZE_PX } from '@/constants';
+import Hedgehog from './hedgehog';
 
 // const INITIAL_BUILDING_PERCENTAGE = 0.00;
 const BUILDING_GROWTH_PERCENTAGE = 0.001;
@@ -63,6 +64,26 @@ export default class City {
 
         // Add new buildings on new row
         const positions = this.generateUniqueIntegers(MAP_SIZE.width, 2);
+
+        // Spawn hedgehog
+        const random = Math.floor(Math.random() * MAP_SIZE.width);    
+
+        if(!positions.includes(random)) {
+            const spawn = Math.floor(Math.random() * 101);
+
+            if(spawn < 50) {
+                const lostChild = new Hedgehog(random + 0.5, y + 0.5 + this.step, 0, this.scene, 0.5, 0, 0, this.hedgehog.lostChildren.length + 1);
+                lostChild.position.x = lostChild.sprite.x;
+                lostChild.position.y = lostChild.sprite.y;
+
+                this.scene.physics.add.collider(lostChild.sprite, this.spriteGroup);
+
+                this.hedgehog.lostChildren.push(lostChild);
+                
+            }
+        }
+
+
         positions.forEach(x => {
             this.placeBuilding(x, y);
         })
@@ -107,6 +128,12 @@ export default class City {
                     }
                 }
 
+                for (let lostChild of this.hedgehog.lostChildren) {
+                    if (this.isHedgehogInBuilding(lostChild, x, y, stepSaved)) {
+                        lostChild.kill();
+                    }
+                }
+
                 if (this.isHedgehogInBuilding(this.hedgehog, x, y, stepSaved)) {
                     this.hedgehog.kill();
                 }
@@ -115,6 +142,7 @@ export default class City {
 
             const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, texture[0]);
             sprite.play(texture[1]);
+
             sprite.setScale(32 / 256);
             sprite.setOrigin(0, 0);
             sprite.on('animationcomplete', () => {
@@ -124,6 +152,12 @@ export default class City {
                 for (let child of this.hedgehog.children) {
                     if (this.isHedgehogInBuilding(child, x, y, stepSaved)) {
                         child.kill();
+                    }
+                }
+
+                for (let lostChild of this.hedgehog.lostChildren) {
+                    if (this.isHedgehogInBuilding(lostChild, x, y, stepSaved)) {
+                        lostChild.kill();
                     }
                 }
 
@@ -154,9 +188,11 @@ export default class City {
             for (let y = 0; y < MAP_SIZE.height; y++) {
                 if (this.grid[y][x] !== 0) {
                     const adjacentBuildings = this.getAdjacentBuildings(x, y);
-                    // console.log(adjacentBuildings);
                     adjacentBuildings.forEach((buildingPos) => {
-                        const time_to_grow = Math.random() < BUILDING_GROWTH_PERCENTAGE;
+                        
+                        const random = Math.random();
+                        const time_to_grow = random < BUILDING_GROWTH_PERCENTAGE;
+
                         if (time_to_grow) {
                             this.placeBuilding(buildingPos.x, buildingPos.y);
                         }
