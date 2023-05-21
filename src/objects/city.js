@@ -69,7 +69,7 @@ export default class City {
             const spawn = Math.floor(Math.random() * 101);
 
             if (spawn < 10) {
-                const lostChild = new Hedgehog(random + 0.5, y + 0.5 + this.step, 0, this.scene, 0.5, 0, 0, this.hedgehog.lostChildren.length + 1);
+                const lostChild = new Hedgehog(random + 0.5, y + 0.5 + this.step, this.scene, 0.5, 0, 0, this.hedgehog.lostChildren.length + 1);
                 lostChild.position.x = lostChild.sprite.x;
                 lostChild.position.y = lostChild.sprite.y;
 
@@ -95,7 +95,6 @@ export default class City {
         // Increase building growth percentage
         if (this.buildingGrowthPercentage < BUILDING_GROWTH_PERCENTAGE_MAX) {
             this.buildingGrowthPercentage += BUILDING_GROWTH_PERCENTAGE_INCREASE;
-            console.log("difficulty: " + this.buildingGrowthPercentage);
         }
     }
 

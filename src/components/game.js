@@ -5,16 +5,6 @@ import Chunk from '../objects/chunk';
 
 import { TILE_SIZE_PX, MAP_SIZE, SCROLL_SPEED } from "@/constants";
 
-const tilesets = {
-  tiles: {
-    name: "tiles",
-    path: "/assets/sprites/nature/grass.jpg",
-    nbImagesPerRow: 1,
-    imageSize: [100, 100]
-  },
-};
-
-const TILESET = tilesets.tiles;
 const nbWalkingSounds = 9;
 const nbBuildingSounds = 21;
 const nbDeathSounds = 4;
@@ -32,12 +22,10 @@ class BoardScene extends Phaser.Scene {
   }
   preload() {
     // Load tileset
-    this.load.spritesheet(TILESET.name, TILESET.path, {
-      frameWidth: TILESET.imageSize[0],
-      frameHeight: TILESET.imageSize[1]
-    });
     this.load.image('hedgehog_ani0', 'assets/sprites/animals/Hedgehog0000.png');
     this.load.image('hedgehog_ani1', 'assets/sprites/animals/Hedgehog0001.png');
+
+    this.load.image('concrete', 'assets/sprites/city/concrete.jpg');
 
     this.load.image('building_ani0', 'assets/sprites/city/Building01.png');
     this.load.image('city0', 'assets/sprites/city/city0.png');
@@ -121,7 +109,7 @@ class BoardScene extends Phaser.Scene {
     });
 
     // Create entities
-    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, 0, this, 1, 100, data.childRemaining, 0);
+    this.hedgehog = new Hedgehog(MAP_SIZE.width / 2, 15, this, 1, 100, data.childRemaining, 0);
     this.city = new City(this, this.hedgehog);
     this.cameraTarget = this.add.sprite(this.hedgehog.position.x * TILE_SIZE_PX, 500, "");
 
@@ -191,11 +179,11 @@ class BoardScene extends Phaser.Scene {
 
     // Scroll map
     if (!(this.scrollDistance % TILE_SIZE_PX)) {
-      const step = this.scrollDistance / TILE_SIZE_PX,
+        const step = this.scrollDistance / TILE_SIZE_PX,
         rowToScroll = step % MAP_SIZE.height;
 
       if (this.chunks[rowToScroll]) {
-        this.chunks[rowToScroll].move();
+        this.chunks[rowToScroll].move(step);
       }
 
       this.city.nextRow();
