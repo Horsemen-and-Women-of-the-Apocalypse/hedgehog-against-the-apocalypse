@@ -72,7 +72,7 @@ export default class Hedgehog {
                 lostChild.target == undefined;
 
                 this.lostChildren.splice(i, 1);
-                this.children.push(lostChild);     
+                this.children.push(lostChild);
             }
 
         }
@@ -105,7 +105,7 @@ export default class Hedgehog {
             lostchild.updatePosition(false, true);
         }
 
-        if(isLost && this.target) {
+        if (isLost && this.target) {
             this.SPEED = 20;
 
             const position = {
@@ -147,7 +147,7 @@ export default class Hedgehog {
             if (!this.sprite?.anims?.isPlaying) this.sprite.play('hedgehog');
 
             // Play the sound if the sound is not already playing
-            if (this.playingSound === null || !this.playingSound.isPlaying) {
+            if (!isLost && (this.playingSound === null || !this.playingSound.isPlaying)) {
                 const random = Math.floor(Math.random() * this.scene.walkSounds.length);
                 this.playingSound = this.scene.walkSounds[random];
                 // Reduce the volume of the sound if the hedgehog is a child
@@ -182,7 +182,7 @@ export default class Hedgehog {
     kill(lost) {
 
         this.isAlive = false;
-        if(lost) {
+        if (lost) {
             if (this.parent) {
                 this.parent.died(this.id, lost);
             }
@@ -190,22 +190,22 @@ export default class Hedgehog {
             if (this.parent) {
                 this.parent.died(this.id);
             }
+            // Play death sound
+            const random = Math.floor(Math.random() * this.scene.deathSounds.length);
+            this.scene.deathSounds[random].play();
         }
-        
+
         this.sprite.destroy();
 
-        // Play death sound
-        const random = Math.floor(Math.random() * this.scene.deathSounds.length);
-        this.scene.deathSounds[random].play();
     }
 
     died(id, lost) {
-        if(lost) {
+        if (lost) {
             const index = this.lostChildren.findIndex(child => child.id == id);
             this.lostChildren.splice(index, 1);
         } else {
             const index = this.children.findIndex(child => child.id == id);
             this.children.splice(index, 1);
-        } 
+        }
     }
 }

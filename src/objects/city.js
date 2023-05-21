@@ -133,7 +133,7 @@ export default class City {
 
                 for (let lostChild of this.hedgehog.lostChildren) {
                     if (this.isHedgehogInBuilding(lostChild, x, y, stepSaved)) {
-                        lostChild.kill();
+                        lostChild.kill(true);
                     }
                 }
 
@@ -160,7 +160,7 @@ export default class City {
 
                 for (let lostChild of this.hedgehog.lostChildren) {
                     if (this.isHedgehogInBuilding(lostChild, x, y, stepSaved)) {
-                        lostChild.kill();
+                        lostChild.kill(true);
                     }
                 }
 
