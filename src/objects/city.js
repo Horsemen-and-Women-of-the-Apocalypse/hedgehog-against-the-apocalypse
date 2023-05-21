@@ -5,9 +5,6 @@ const BUILDING_GROWTH_PERCENTAGE = 0.001;
 
 export default class City {
 
-    /**
-     * @param {*} scene
-     */
     constructor(scene, hedgehog) {
         this.scene = scene;
         this.hedgehog = hedgehog
@@ -22,8 +19,6 @@ export default class City {
     resetGrid() {
         // Create a grid of size mapSize
         this.grid = [];
-        // let centerX = Math.floor(MAP_SIZE.width / 2);
-        // let centerY = Math.floor(MAP_SIZE.height / 2);
 
         for (let y = 0; y < MAP_SIZE.height; y++) {
             this.grid.push([]);
@@ -115,8 +110,8 @@ export default class City {
 
             const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, texture[0]);
             sprite.play(texture[1]);
-            sprite.setScale(32 / 256);
             sprite.setOrigin(0, 0);
+            sprite.setScale(32 / 64);
             sprite.on('animationcomplete', () => {
                 this.spriteGroup.add(sprite);
                 sprite.setImmovable();
@@ -137,13 +132,14 @@ export default class City {
     }
 
     getTexture() {
-        const random = Math.floor(Math.random() * 101);
+        const textures = [
+            ['building_ani0', 'building_0'],
+            ['building_ani0', 'building_1'],
+            ['building_ani0', 'building_2'],
+            ['building_ani0', 'building_3']
+        ];
 
-        if (random > 60) {
-            return ['building_1_ani1', 'building_1'];
-        } else {
-            return ['building_2_ani1', 'building_2'];
-        }
+        return textures[Math.floor(Math.random() * 4)];
     }
 
     theCityIsGrowing() {
