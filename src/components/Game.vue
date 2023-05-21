@@ -4,20 +4,29 @@
     <div id="controls">
       <a href="#/home"><button id="about">Home</button></a>
 
-      <div id="childs">
-        <TransitionGroup
-          name="list"
-          tag="ul"
+      <Transition>
+        <div
+          id="childs"
+          v-if="!gameOver"
         >
-          <img
-            class="child displayPannel"
-            v-for="(child, i) in childRemaining"
-            :key="i"
-            src="hhIcon.png"
-          />
-        </TransitionGroup>
-      </div>
-      <div id="scoreYear" class="displayPannel">
+          <TransitionGroup
+            name="list"
+            tag="ul"
+          >
+            <img
+              class="child displayPannel"
+              v-for="(child, i) in childRemaining"
+              :key="i"
+              src="assets/sprites/animals/Hedgehog0000.png"
+            />
+          </TransitionGroup>
+        </div>
+      </Transition>
+
+      <div
+        id="scoreYear"
+        class="displayPannel"
+      >
         {{ scoreYear }}
       </div>
     </div>
@@ -106,7 +115,6 @@ export default {
       this.scoreYear = data.year;
       this.childRemaining = data.childRemaining;
       this.gameOver = data.gameOver;
-      if (data.gameOver) this.childRemaining = 0
     }, 1000);
 
   },
@@ -186,8 +194,11 @@ button {
 }
 
 .child {
-  height: 50px;
+  height: 35px;
   margin-right: 10px;
+  padding: 5px;
+  border-radius: 50px;
+  opacity: 0.8;
 }
 
 .list-enter-active,
@@ -211,16 +222,17 @@ button {
 .v-leave-to {
   opacity: 0;
 }
+
 #soundControl {
   position: absolute;
   bottom: 0;
-  left: 0;
+  right: 0;
   padding: 10px;
   z-index: 100;
-  width: 99%;
   display: flex;
   justify-content: flex-end;
 }
+
 #muteButton {
   margin: 10px;
   padding: 10px;
