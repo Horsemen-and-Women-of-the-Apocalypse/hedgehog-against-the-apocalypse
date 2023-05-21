@@ -71,15 +71,14 @@ export default class City {
         if(!positions.includes(random)) {
             const spawn = Math.floor(Math.random() * 101);
 
-            if(spawn < 50) {
+            if(spawn < 10) {
                 const lostChild = new Hedgehog(random + 0.5, y + 0.5 + this.step, 0, this.scene, 0.5, 0, 0, this.hedgehog.lostChildren.length + 1);
                 lostChild.position.x = lostChild.sprite.x;
                 lostChild.position.y = lostChild.sprite.y;
 
                 this.scene.physics.add.collider(lostChild.sprite, this.spriteGroup);
 
-                this.hedgehog.lostChildren.push(lostChild);
-                
+                this.hedgehog.lostChildren.push(lostChild);       
             }
         }
 
@@ -124,7 +123,9 @@ export default class City {
                 // Check if the hedgehog is in the new building
                 for (let child of this.hedgehog.children) {
                     if (this.isHedgehogInBuilding(child, x, y, stepSaved)) {
-                        child.kill();
+                        setTimeout(() => {
+                            child.kill();
+                        }, 10);
                     }
                 }
 
@@ -151,7 +152,9 @@ export default class City {
                 // Check if the hedgehog is in the new building
                 for (let child of this.hedgehog.children) {
                     if (this.isHedgehogInBuilding(child, x, y, stepSaved)) {
-                        child.kill();
+                        setTimeout(() => {
+                            child.kill();
+                        }, 10);
                     }
                 }
 

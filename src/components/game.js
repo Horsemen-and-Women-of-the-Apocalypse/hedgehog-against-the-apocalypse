@@ -192,9 +192,6 @@ const config = {
   height: window.innerHeight,
   physics: {
     default: 'arcade',
-    arcade :{
-      debug: true
-    }
   },
   pixelArt: true,
   fps: {

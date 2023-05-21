@@ -161,6 +161,7 @@ export default class Hedgehog {
 
     }
     kill(lost) {
+
         this.isAlive = false;
         if(lost) {
             if (this.parent) {
