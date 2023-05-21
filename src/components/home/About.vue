@@ -1,9 +1,37 @@
 <template>
   <div id="about">
     <h2>
-      Abouts
+      About
       <button>Back to Home</button>
     </h2>
+
+    <div id="designer">
+
+      <h3>Designer</h3>
+
+      <p>cyborgnekosica - <a href="https://www.artfol.co/CyborgNekoSica">Portfolio</a></p> 
+    </div>
+    <div id="developer">
+
+      <h3>Developer</h3>
+
+      <p>Tomansion - <a href="https://github.com/Tomansion">Github</a></p>
+      <p>Nonologisme - <a href="https://gitlab.com/nonologism">Gitlab</a></p>
+      <p>Fantorem - <a href="https://github.com/Fantorem">Github</a></p>
+    </div>
+    <div id="sound">
+
+      <h3>Sound effects</h3>
+
+      <p>Tomansion</p>
+    </div>
+    <div id="music">
+
+      <h3>Music</h3>
+
+      <p>Nonologisme</p>
+    </div>
+    <div id="phaser"><p><small>Made with Phaser : <a href="https://phaser.io/">Phaser</a></small></p></div>
   </div>
 </template>
 
@@ -27,7 +55,6 @@ export default {
   transform: translate(-50%, -50%);
   background: white;
   width: 500px;
-  height: 700px;
   padding: 40px;
   cursor: pointer;
 }
@@ -45,4 +72,10 @@ button {
   cursor: pointer;
   transition: all 0.1s;
 }
+
+#phaser{
+  padding-top: 10%;
+  align-self: flex-end;
+}
+
 </style>
