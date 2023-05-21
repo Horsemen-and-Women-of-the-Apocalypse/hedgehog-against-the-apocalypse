@@ -127,6 +127,8 @@ class BoardScene extends Phaser.Scene {
     this.cameras.main.setZoom(2);
     this.cameras.main.setBackgroundColor("#000000");
     this.cameras.main.setBounds(0, 0, TILE_SIZE_PX * MAP_SIZE.width, Number.POSITIVE_INFINITY);
+    // Add vignette
+    this.vignetteFx = this.cameras.main.postFX.addVignette(0.5, 0.5, 1, 0.5);
 
     // Physics
     this.physics.add.collider(this.hedgehog.sprite, this.city.spriteGroup);
@@ -179,7 +181,7 @@ class BoardScene extends Phaser.Scene {
 
     // Scroll map
     if (!(this.scrollDistance % TILE_SIZE_PX)) {
-        const step = this.scrollDistance / TILE_SIZE_PX,
+      const step = this.scrollDistance / TILE_SIZE_PX,
         rowToScroll = step % MAP_SIZE.height;
 
       if (this.chunks[rowToScroll]) {
@@ -190,7 +192,7 @@ class BoardScene extends Phaser.Scene {
     }
 
     // Scroll camera
-    this.cameraTarget.setPosition(this.hedgehog.position.x, this.scrollDistance + 500)
+    this.cameraTarget.setPosition(this.hedgehog.position.x, this.scrollDistance + 500);
 
     // Kill hedgehog if out of map
     const animals = [this.hedgehog, ...this.hedgehog.children]
