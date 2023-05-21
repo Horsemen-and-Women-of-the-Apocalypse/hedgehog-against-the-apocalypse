@@ -21,20 +21,28 @@
         {{ scoreYear }}
       </div>
     </div>
+    <button
+      @click="soundMuted = !soundMuted"
+      id="muteButton"
+    >
+      {{ soundMuted ? "Unmute" : "Mute" }}
+    </button>
     <!-- Game over pannel -->
     <Transition>
       <div
         id="gameOverPannel"
         v-if="gameOver"
       >
-        <h3>
+        <h3 v-if="childRemaining === 0">
+          No children left.
+        </h3>
+        <h3 v-else>
           Game over
         </h3>
         <p>
-          You went extinct in {{ scoreYear }}.
-        </p>
-        <p v-if="childRemaining === 0">
-          No children left.
+          You went extinct in <b>
+            {{ scoreYear }}
+          </b>.
         </p>
         <button
           id="play"
@@ -60,6 +68,7 @@ export default {
       gameOver: false,
       childRemaining: data.childRemaining,
       scoreYear: data.year,
+      soundMuted: false,
     }
   },
   mounted() {
@@ -79,14 +88,22 @@ export default {
       this.scoreYear = data.year;
       this.childRemaining = data.childRemaining;
       this.gameOver = data.gameOver;
+      if (data.gameOver) this.childRemaining = 0
     }, 1000);
+
   },
   methods: {
     resartGame() {
       this.game.destroy(true);
       this.game = new Phaser.Game(config);
+      this.game.sound.mute = this.soundMuted;
       this.gameOver = false;
       data.gameOver = false;
+    }
+  },
+  watch: {
+    soundMuted() {
+      this.game.sound.mute = this.soundMuted;
     }
   },
   beforeUnmount() {
@@ -183,5 +200,23 @@ button {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+
+#muteButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 10px;
+  padding: 10px;
+  width: 70px;
+  border-radius: 10px;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.504));
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

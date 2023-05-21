@@ -166,7 +166,7 @@ class BoardScene extends Phaser.Scene {
       y: this.input.activePointer.worldY
     }
 
-    this.hedgehog.setTargetPosition(position);
+    if (!data.gameOver) this.hedgehog.setTargetPosition(position);
 
     // Update entities
     this.city.theCityIsGrowing();

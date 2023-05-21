@@ -102,7 +102,9 @@ export default class City {
                 // Check if the hedgehog is in the new building
                 for (let child of this.hedgehog.children) {
                     if (this.isHedgehogInBuilding(child, x, y, stepSaved)) {
-                        child.kill();
+                        setTimeout(() => {
+                            child.kill();
+                        }, 10);
                     }
                 }
 
