@@ -32,6 +32,7 @@ class BoardScene extends Phaser.Scene {
     this.load.image('city1', 'assets/sprites/city/city1.png');
     this.load.image('city2', 'assets/sprites/city/city2.png');
     this.load.image('city3', 'assets/sprites/city/city3.png');
+    this.load.image('city4', 'assets/sprites/city/city4.png');
 
     this.load.image('grass', 'assets/sprites/nature/grass.jpg');
     this.load.image('flower', 'assets/sprites/nature/Flowers_Tiles.jpg');
@@ -103,6 +104,16 @@ class BoardScene extends Phaser.Scene {
       frames: [
         { key: 'building_ani0', duration: 2000 },
         { key: 'city3' },
+      ],
+      frameRate: 10,
+      repeat: 0
+    });
+
+    this.anims.create({
+      key: 'building_4',
+      frames: [
+        { key: 'building_ani0', duration: 2000 },
+        { key: 'city4' },
       ],
       frameRate: 10,
       repeat: 0
