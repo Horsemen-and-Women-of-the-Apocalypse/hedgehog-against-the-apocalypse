@@ -36,10 +36,16 @@ class BoardScene extends Phaser.Scene {
     this.load.image('hedgehog_ani0', 'assets/sprites/animals/Hedgehog0000.png');
     this.load.image('hedgehog_ani1', 'assets/sprites/animals/Hedgehog0001.png');
 
-    this.load.image('building_1_ani0', 'assets/sprites/city/Concrete_Tiles.jpg');
-    this.load.image('building_1_ani1', 'assets/sprites/city/Building_1_0000.png');
+    this.load.image('building_1_ani0', 'assets/sprites/city/Concrete_Tiles_256.jpg');
+    this.load.image('building_1_ani1', 'assets/sprites/city/Building_1_0000_concrete.png');
     this.load.image('building_1_ani2', 'assets/sprites/city/Building_1_0001.png');
+
+    this.load.image('building_2_ani1', 'assets/sprites/city/Building_2_0000.png');
+    this.load.image('building_2_ani2', 'assets/sprites/city/Building_2_0001.png');
+
     this.load.image('grass', 'assets/sprites/nature/grass.jpg');
+    this.load.image('flower', 'assets/sprites/nature/Flowers_Tiles.jpg');
+    this.load.image('bush', 'assets/sprites/nature/Bush_Grass.jpg');
 
     this.scrollDistance = 0;
   }
@@ -68,6 +74,16 @@ class BoardScene extends Phaser.Scene {
       frames: [
         { key: 'building_1_ani1', duration: 2000 },
         { key: 'building_1_ani2' },
+      ],
+      frameRate: 10,
+      repeat: 0
+    });
+
+    this.anims.create({
+      key: 'building_2',
+      frames: [
+        { key: 'building_2_ani1', duration: 2000 },
+        { key: 'building_2_ani2' },
       ],
       frameRate: 10,
       repeat: 0

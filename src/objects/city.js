@@ -16,7 +16,7 @@ export default class City {
         this.moveSpriteIterator = 0;
         this.spriteGroup = this.scene.physics.add.group();
         this.maxSprites = MAP_SIZE.width * MAP_SIZE.height;
-        
+
     }
 
     resetGrid() {
@@ -82,13 +82,15 @@ export default class City {
         this.grid[y][x] = 1;
         const stepSaved = this.step;
 
+        const texture = this.getTexture();
+
         if (this.sprites.length > this.maxSprites) {
             // Move the sprite
             // Remove from the group first to prevent collisions
             const spriteToMove = this.sprites[this.moveSpriteIterator];
             this.spriteGroup.remove(spriteToMove);
             spriteToMove.setPosition(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX);
-            spriteToMove.play('building_1');
+            spriteToMove.play(texture[1]);
             this.moveSpriteIterator = (this.moveSpriteIterator + 1) % this.maxSprites;
 
             // Delete event listener
@@ -110,8 +112,9 @@ export default class City {
                 }
             })
         } else {
-            const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, 'building_1_ani1')
-            sprite.play('building_1');
+
+            const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, texture[0]);
+            sprite.play(texture[1]);
             sprite.setScale(32 / 256);
             sprite.setOrigin(0, 0);
             sprite.on('animationcomplete', () => {
@@ -130,6 +133,16 @@ export default class City {
             });
 
             this.sprites.push(sprite);
+        }
+    }
+
+    getTexture() {
+        const random = Math.floor(Math.random() * 101);
+
+        if (random > 60) {
+            return ['building_1_ani1', 'building_1'];
+        } else {
+            return ['building_2_ani1', 'building_2'];
         }
     }
 
