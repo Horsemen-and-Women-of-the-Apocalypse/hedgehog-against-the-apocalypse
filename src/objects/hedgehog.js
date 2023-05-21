@@ -34,6 +34,9 @@ export default class Hedgehog {
         for (let i = 0; i < childNumber; i++) {
             this.children.push(new Hedgehog(defaultX, defaultY + i / 3, 0, this.scene, 0.5, 80, 0, i + 1, this));
         }
+
+        // Sounds
+        this.playingSound = null;
     }
 
     setTargetPosition(position) {
@@ -143,6 +146,23 @@ export default class Hedgehog {
             }
             // Play the animation if the animation is not already playing
             if (!this.sprite?.anims?.isPlaying) this.sprite.play('hedgehog');
+
+            // Play the sound if the sound is not already playing
+            if (this.playingSound === null || !this.playingSound.isPlaying) {
+                const random = Math.floor(Math.random() * this.scene.walkSounds.length);
+                this.playingSound = this.scene.walkSounds[random];
+                // Reduce the volume of the sound if the hedgehog is a child
+                if (isChild) {
+                    this.playingSound.setVolume(0.2);
+                    // Play faster if the hedgehog is a child
+                    this.playingSound.setRate(1.1);
+                }
+                else {
+                    this.playingSound.setVolume(0.5);
+                    this.playingSound.setRate(0.9);
+                }
+                this.playingSound.play();
+            }
         }
 
         // Apply the velocity
@@ -174,6 +194,10 @@ export default class Hedgehog {
         }
         
         this.sprite.destroy();
+
+        // Play death sound
+        const random = Math.floor(Math.random() * this.scene.deathSounds.length);
+        this.scene.deathSounds[random].play();
     }
 
     died(id, lost) {

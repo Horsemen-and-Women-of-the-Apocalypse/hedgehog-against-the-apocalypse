@@ -15,6 +15,9 @@ const tilesets = {
 };
 
 const TILESET = tilesets.tiles;
+const nbWalkingSounds = 9;
+const nbBuildingSounds = 21;
+const nbDeathSounds = 4;
 
 const data = {
   year: 2023,
@@ -45,6 +48,15 @@ class BoardScene extends Phaser.Scene {
     this.load.image('grass', 'assets/sprites/nature/grass.jpg');
     this.load.image('flower', 'assets/sprites/nature/Flowers_Tiles.jpg');
     this.load.image('bush', 'assets/sprites/nature/Bush_Grass.jpg');
+
+    // Load sound effects
+    for (let i = 1; i < nbWalkingSounds; i++)
+      this.load.audio(`walk_${i}`, [`assets/soundEffects/walk/${i}.wav`]);
+    for (let i = 1; i < nbBuildingSounds; i++)
+      this.load.audio(`build_${i}`, [`assets/soundEffects/build/${i}.wav`]);
+    for (let i = 1; i < nbDeathSounds; i++)
+      this.load.audio(`death_${i}`, [`assets/soundEffects/death/${i}.wav`]);
+
 
     this.scrollDistance = 0;
   }
@@ -133,6 +145,21 @@ class BoardScene extends Phaser.Scene {
     this.hedgehog.children.forEach((child) => {
       this.physics.add.collider(child.sprite, this.city.spriteGroup);
     });
+
+    // Create sounds
+    this.walkSounds = [];
+    this.buildSounds = [];
+    this.deathSounds = [];
+    for (let i = 1; i < nbWalkingSounds; i++)
+      this.walkSounds.push(this.sound.add(`walk_${i}`));
+    for (let i = 1; i < nbBuildingSounds; i++) {
+      this.buildSounds.push(this.sound.add(`build_${i}`));
+      this.buildSounds[i - 1].setVolume(0.5);
+      this.buildSounds[i - 1].setRate(1.5);
+      this.buildSounds[i - 1].setDetune(-1000);
+    }
+    for (let i = 1; i < nbDeathSounds; i++)
+      this.deathSounds.push(this.sound.add(`death_${i}`));
   }
 
   resetMap() {
@@ -156,7 +183,7 @@ class BoardScene extends Phaser.Scene {
       y: this.input.activePointer.worldY
     }
 
-    this.hedgehog.setTargetPosition(position);
+    if (!data.gameOver) this.hedgehog.setTargetPosition(position);
 
     // Update entities
     this.city.theCityIsGrowing();

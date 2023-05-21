@@ -14,7 +14,6 @@ export default class City {
         this.moveSpriteIterator = 0;
         this.spriteGroup = this.scene.physics.add.group();
         this.maxSprites = MAP_SIZE.width * MAP_SIZE.height;
-
     }
 
     resetGrid() {
@@ -135,7 +134,6 @@ export default class City {
                 }
             })
         } else {
-
             const sprite = this.scene.physics.add.sprite(x * TILE_SIZE_PX, (this.step + CITY_HEADSTART + y) * TILE_SIZE_PX, texture[0]);
             sprite.play(texture[1]);
             sprite.setOrigin(0, 0);
@@ -165,6 +163,7 @@ export default class City {
 
             this.sprites.push(sprite);
         }
+
     }
 
     getTexture() {
@@ -193,6 +192,13 @@ export default class City {
 
                         if (time_to_grow) {
                             this.placeBuilding(buildingPos.x, buildingPos.y);
+
+                            // Play a sound Only if the building is randomly growing
+                            const random = Math.floor(Math.random() * this.scene.buildSounds.length);
+                            const sound = this.scene.buildSounds[random];
+                            if (!sound.isPlaying) {
+                                sound.play();
+                            }
                         }
                     })
                 }
