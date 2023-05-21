@@ -21,12 +21,25 @@
         {{ scoreYear }}
       </div>
     </div>
-    <button
-      @click="soundMuted = !soundMuted"
-      id="muteButton"
-    >
-      {{ soundMuted ? "Unmute" : "Mute" }}
-    </button>
+
+    <div id="soundControl">
+      <!-- Volume slider -->
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.1"
+        v-model="volume"
+      />
+
+      <!-- Mute button -->
+      <button
+        @click="soundMuted = !soundMuted"
+        id="muteButton"
+      >
+        {{ soundMuted ? "Unmute" : "Mute" }}
+      </button>
+    </div>
     <!-- Game over pannel -->
     <Transition>
       <div
@@ -68,11 +81,16 @@ export default {
       gameOver: false,
       childRemaining: data.childRemaining,
       scoreYear: data.year,
+      volume: 0.5,
       soundMuted: false,
     }
   },
   mounted() {
+    // Init game
     this.game = new Phaser.Game(config);
+
+    // Decrease volume
+    this.game.sound.setVolume(0.2)
 
     // Set up resize event listener to adapt to window size changes
     window.addEventListener("resize", () => {
@@ -104,6 +122,10 @@ export default {
   watch: {
     soundMuted() {
       this.game.sound.mute = this.soundMuted;
+    },
+    volume() {
+      this.game.sound.setVolume(this.volume);
+      this.soundMuted = false;
     }
   },
   beforeUnmount() {
@@ -201,11 +223,17 @@ button {
 .v-leave-to {
   opacity: 0;
 }
-
-#muteButton {
+#soundControl {
   position: absolute;
   bottom: 0;
-  right: 0;
+  left: 0;
+  padding: 10px;
+  z-index: 100;
+  width: 99%;
+  display: flex;
+  justify-content: flex-end;
+}
+#muteButton {
   margin: 10px;
   padding: 10px;
   width: 70px;
