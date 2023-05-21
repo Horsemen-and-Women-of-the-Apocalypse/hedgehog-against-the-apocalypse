@@ -179,10 +179,11 @@ export default class City {
             ['building_ani0', 'building_0'],
             ['building_ani0', 'building_1'],
             ['building_ani0', 'building_2'],
-            ['building_ani0', 'building_3']
+            ['building_ani0', 'building_3'],
+            ['building_ani0', 'building_4']
         ];
 
-        return textures[Math.floor(Math.random() * 4)];
+        return textures[Math.floor(Math.random() * 5)];
     }
 
     theCityIsGrowing() {
